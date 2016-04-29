@@ -47,6 +47,9 @@ class Player(pygame.sprite.Sprite):
             ## Set texture
             self.image = self.bunny_stand
         
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
+
         ## Get sprite position
         self.rect = self.image.get_rect()
 
@@ -134,6 +137,9 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.bunny_walk2_l
             else :
                 self.animation_time = 0
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
 
         ## Update player position
         self.rect.x += self.speed

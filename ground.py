@@ -13,6 +13,8 @@ class Ground(pygame.sprite.Sprite):
         ## Set the background to transparent
         self.image.set_colorkey(Color.BLACK)
 
+        self.mask = pygame.mask.from_surface(self.image)
+
         ## Get sprite position
         self.rect = self.image.get_rect()
         ## Get sprite width and height

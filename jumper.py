@@ -18,6 +18,8 @@ class Game :
         screen = pygame.display.set_mode([Config.width, Config.height])
         ## Init windows title
         pygame.display.set_caption("JUMPER !!!")
+
+        pygame.mouse.set_visible(True)
         ## Init clock
         clock = pygame.time.Clock()
         ## Menu loop stat
@@ -82,11 +84,11 @@ class Game :
             pointer.rect.x = pos[0]
             pointer.rect.y = pos[1]
             
-            ## Detect colision between pointer and buton group
+            ## Detect rect colision between pointer and buton group
             buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
             
-            ## If a colision is detected
-            if buton_pointer_list != [] :
+            ## If a rect colision is detected
+            if buton_pointer_list != [] : 
                 ## For each buton who are in colision with pointer
                 for buton in buton_pointer_list :
                     ## Update text Color to red
@@ -122,15 +124,12 @@ class Game :
             clock.tick(60)
     
     def game() :
-        ## Init values
-        JUMP = 0
-        C_base = -109
-        C = C_base
-        GROUND = 0
         ## Init screen        
         screen = pygame.display.set_mode([Config.width, Config.height])
         ## Init clock
         clock = pygame.time.Clock()
+
+        pygame.mouse.set_visible(False)
         ## Set background
         background = Background()
         ## Set game loop stat
@@ -148,8 +147,8 @@ class Game :
         ## Add player to movable group
         all_game_sprites_list.add(player)
 
-        json_data = open("map.json")
-        map_data = json.load(json_data)
+        with open("map.json") as json_data :
+            map_data = json.load(json_data)
         
         ## Generate map
         i = 0
@@ -228,45 +227,57 @@ class Game :
             ## Jump process
             player.jump()
             
-            ## Detect colisions between player and ground block
+            ## Detect rect colisions between player and ground block
             ground_player_list = pygame.sprite.spritecollide(player, ground_list, True)
-            ## If a colision is detected
+            ## If a rect colision is detected
             if ground_player_list != [] :
                 ## For each blocks in colision
                 for ground in ground_player_list :
-                    ## If the player is enter into the block by the top
-                    if (player.rect.y + player.height) <= (ground.rect.y + 3) :
-                        ## Set ground value to true
-                        player.reset("on_ground")
-                        ## Set player pos to the top of the block
-                        player.rect.y = ground.rect.y - player.height
-                        last_ground = ground
-                    ## If the player is enter into the block by the bottom
-                    elif (player.rect.y) >= (ground.rect.y + ground.height - 3) :
-                        ## Move the player out of the block
-                        player.rect.y = (ground.rect.y + ground.height )
-                        ## Reset player variables
-                        player.reset("after_jump")
-                        ## Set block to the last block
-                        last_ground = ground
-                        ## Gravity
-                        player.rect.y += 3
-                    ## If the player is enter into the block by the right side
-                    elif (player.rect.x + player.width) >= (ground.rect.x) and (player.rect.x + player.width) <= (ground.rect.x + ground.width - 5) :
-                        ## Move the player out of the block
-                        player.rect.x = (ground.rect.x - player.width)
-                        ## Gravity
-                        player.rect.y += 3
-                    ## If the player is enter into the block by the left side
-                    elif (player.rect.x) < (ground.rect.x + ground.width) and (player.rect.x) > (ground.rect.x - 5) :
-                        ## Move the player out of the block
-                        player.rect.x = (ground.rect.x + ground.width)
+                    ## If a bitmap colision is detected
+                    if pygame.sprite.collide_mask(player, ground) != None :
+                        ## If the player is enter into the block by the top
+                        if (player.rect.y + player.height) <= (ground.rect.y + 3) :
+                            ## Set ground value to true
+                            player.reset("on_ground")
+                            ## Set player pos to the top of the block
+                            player.rect.y -= 3
+                            ## Set the block to last block
+                            last_ground = ground
+                        ## If the player is enter into the block by the bottom
+                        elif (player.rect.y) >= (ground.rect.y + ground.height - 30) :
+                            ## Move the player out of the block
+                            player.rect.y += 1 #(ground.rect.y + ground.height )
+                            ## Reset player variables
+                            player.reset("after_jump")
+                            ## Set block to the last block
+                            last_ground = ground
+                            ## Gravity
+                            player.rect.y += 3
+                        ## If the player is enter into the block by the right side
+                        elif (player.rect.x + player.width) > (ground.rect.x) and (player.rect.x + player.width) < (ground.rect.x + ground.width) :
+                            ## Move the player out of the block
+                            player.rect.x -= (5 + player.speed)
+                            ## Gravity
+                            player.rect.y += 3
+                        ## If the player is enter into the block by the left side
+                        elif (player.rect.x) < (ground.rect.x + ground.width) and (player.rect.x) > (ground.rect.x) :
+                            ## Move the player out of the block
+                            player.rect.x += (5 - player.speed)
+                            ## Gravity
+                            player.rect.y += 3
+                    ## If the player isn't on the block or down the block
+                    #elif (player.rect.x + player.width) <= (last_ground.rect.x) or (player.rect.x) >= (last_ground.rect.x + last_ground.width) or (player.rect.y) >= (last_ground.rect.y + last_ground.height) : 
+                    else :
+                        ## Set groud val to 0
+                        player.on_ground = False
                         ## Gravity
                         player.rect.y += 3
                     ## Re-add block to default group
                     movable_list.add(ground)
                     ground_list.add(ground)
                     all_game_sprites_list.add(ground)
+
+
             ## If the player isn't on the block or down the block
             elif (player.rect.x + player.width) <= (last_ground.rect.x) or (player.rect.x) >= (last_ground.rect.x + last_ground.width) or (player.rect.y) >= (last_ground.rect.y + last_ground.height) : 
                 ## Set groud val to 0

@@ -8,15 +8,17 @@ class Pointer(pygame.sprite.Sprite):
         super().__init__()
 
         ## Create a surface of 1x1 px
-        self.image = pygame.Surface((1, 1))
+        self.image = pygame.image.load("PNG/cursor.png").convert()
 
         ## Set color to white
-        self.image.fill(Color.WHITE)
+        self.image.set_colorkey(Color.BLACK)
+
+        ## Define colide mask
+        #self.mask = pygame.mask.from_surface(self.image)
 
         ## Get sprite position
         self.rect = self.image.get_rect()
 
         ## Set default sprite position
-        self.rect.x = 1
-        self.rect.y = 1
-        self.mask = pygame.mask.from_surface(self.image)
+        self.rect.x = 0
+        self.rect.y = 0
