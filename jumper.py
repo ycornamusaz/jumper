@@ -177,28 +177,34 @@ class Game :
                 ## If the cross is pressed, quit game
                 if event.type == pygame.QUIT :
                     done_game = True
+
                 ## If any key is pressed
                 elif event.type == pygame.KEYDOWN :
+                    
                     ## If right key is pressed
                     if event.key == pygame.K_RIGHT :
                         ## Move player to right
                         player.speed = player.speed_base
                         ## Change animation
                         direction = "right"
+
                     ## If left key is pressed
                     elif event.key == pygame.K_LEFT :
                         ## Move player to left
                         player.speed = -(player.speed_base)
                         ## Change animation
                         direction = "left"
+
                     ## If key up is pressed
                     elif event.key == pygame.K_UP :
                         ## Check if player in on the ground before jump
-                        if GROUND == 1 :
-                            last_player_y = player.rect.y
-                            JUMP = 1
+                        if player.on_ground == True :
+                            player.last_y = player.rect.y
+                            player.in_jump = True
+                
                 ## If key is release
                 elif event.type == pygame.KEYUP : 
+                    
                     ## If key right or key left is release 
                     if (event.key == pygame.K_RIGHT) or (event.key == pygame.K_LEFT) :
                         ## Set player speed to 0
@@ -220,20 +226,7 @@ class Game :
                     test.rect.x += 5
 
             ## Jump process
-            if (JUMP == 1) :
-                if (C < -(C_base)) :
-                    player.rect.y = (last_player_y - (-(C/10)**2+120))
-                    C += 3
-                    GROUND = 0
-                else :
-                    ## Reset var
-                    JUMP = 0
-                    C = C_base
-                    GROUND = 0
-                    player.rect.y += 9
-
-            ## Update player position
-            player.rect.x += player.speed
+            player.jump()
             
             ## Detect colisions between player and ground block
             ground_player_list = pygame.sprite.spritecollide(player, ground_list, True)
@@ -244,22 +237,16 @@ class Game :
                     ## If the player is enter into the block by the top
                     if (player.rect.y + player.height) <= (ground.rect.y + 3) :
                         ## Set ground value to true
-                        GROUND = 1
-                        ## Stop jump 
-                        JUMP = 0
-                        ## Reset jump counter
-                        C = C_base
+                        player.reset("on_ground")
                         ## Set player pos to the top of the block
                         player.rect.y = ground.rect.y - player.height
                         last_ground = ground
                     ## If the player is enter into the block by the bottom
-                    elif (player.rect.y) <= (ground.rect.y + ground.height) and player.rect.y >= (ground.rect.y + ground.height - 20) :
+                    elif (player.rect.y) >= (ground.rect.y + ground.height - 3) :
                         ## Move the player out of the block
-                        player.rect.y = (ground.rect.y + ground.height + 5)
-                        ## Stop jump
-                        JUMP = 0
-                        ## Player is "not" on ground
-                        GROUND = 0
+                        player.rect.y = (ground.rect.y + ground.height )
+                        ## Reset player variables
+                        player.reset("after_jump")
                         ## Set block to the last block
                         last_ground = ground
                         ## Gravity
@@ -283,11 +270,11 @@ class Game :
             ## If the player isn't on the block or down the block
             elif (player.rect.x + player.width) <= (last_ground.rect.x) or (player.rect.x) >= (last_ground.rect.x + last_ground.width) or (player.rect.y) >= (last_ground.rect.y + last_ground.height) : 
                 ## Set groud val to 0
-                GROUND = 0
+                player.on_ground = False
                 ## Gravity
                 player.rect.y += 3
 
-            ## Update player animation
+            ## Update player animation and position
             player.update(direction)
         
             ########## CLEAR SCREEN ZONE ##########

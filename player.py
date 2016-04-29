@@ -4,6 +4,8 @@ import pygame
 
 class Player(pygame.sprite.Sprite):
 
+########## INIT PROCESS ##########
+
     def __init__(self, skin):
         ## Call the parent class (Sprite) constructor
         super().__init__()
@@ -51,41 +53,88 @@ class Player(pygame.sprite.Sprite):
         ## Get sprite width and height
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        #self.height_diff = 0
-        ## Set diferents variables
-        self.jump = 0
+        
+        ## Set beeing in jump value
+        self.in_jump = False
+        
+        ## Set last y value before jump
+        self.last_y = self.rect.y
+
+        ## Set beeing on ground value
+        self.on_ground = False
+
+        ## Set value for calculating jump
+        self.c_base = -109
+        self.c = self.c_base
+
+        ## Set player speed base
         self.speed_base = 5
         self.speed = 0
-        self.run_time = 0
+
+        ## Set time to incremant animation
+        self.animation_time = 0
+        
         ## Set player default position
         self.rect.y = Config.height - 32 - 94 - self.height
         self.rect.x = 32
 
+########### RESET PROCESS ##########
+
+    def reset(self, stat) :
+        if stat == "after_jump" :
+            self.in_jump = False
+            self.c = self.c_base
+            self.on_ground = False
+            self.rect.y += 9
+        elif stat == "on_ground" :
+            self.in_jump = False
+            self.c = self.c_base
+            self.on_ground = True
+
+########### JUMP PROCESS ##########
+
+    def jump(self) :
+        ## Player jump process
+        if self.in_jump == True :
+            if (self.c < -(self.c_base)) :
+                self.rect.y = (self.last_y - (-(self.c/10)**2+120))
+                self.c += 3
+                self.on_ground = False
+            else :
+                ## Reset values
+                self.reset("after_jump")
+
+########## ANIMATION AND POSITION UPDATE PROCESS ##########
+
     def update(self, run) :
-        ## Import diferents classes
-    
+
         ## Player animation
         if run == "right" :
             ## Each images alternate every 20 frames
-            if self.run_time < 20: 
+            if self.animation_time < 20: 
                 self.image = self.bunny_walk1_r
-                self.run_time += 1
-            elif self.run_time < 40 :
-                self.run_time += 1
+                self.animation_time += 1
+            elif self.animation_time < 40 :
+                self.animation_time += 1
                 self.image = self.bunny_walk2_r
             else :
-                self.run_time = 0
+                self.animation_time = 0
+
         elif run == "stand" :
             self.image = self.bunny_stand
-            self.run_time = 0
+            self.animation_time = 0
+
         elif run == "left" :
             ## Each images alternate every 20 frames
-            if self.run_time < 20: 
+            if self.animation_time < 20: 
                 self.image = self.bunny_walk1_l
-                self.run_time += 1
-            elif self.run_time < 40 :
-                self.run_time += 1
+                self.animation_time += 1
+            elif self.animation_time < 40 :
+                self.animation_time += 1
                 self.image = self.bunny_walk2_l
             else :
-                self.run_time = 0
+                self.animation_time = 0
+
+        ## Update player position
+        self.rect.x += self.speed
 
