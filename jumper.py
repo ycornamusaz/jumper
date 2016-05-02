@@ -142,29 +142,31 @@ class Game :
         ## Create player and set player direction
         player = Player("male")
         direction = "stand"
+        player_list.add(player)
         ## Add player to gamesprite's group
         movable_list.add(player)
         ## Add player to movable group
         all_game_sprites_list.add(player)
 
-        with open("map.yaml") as yaml_data :
-            map_data = yaml.load(yaml_data)
+#        with open("map.yaml") as yaml_data :
+#            map_data = yaml.load(yaml_data)
+        conf = Config("config.yaml")
         
         ## Generate map
-        
-        for ground_type in map_data["Levels"][0]["Blocks"] :
-            i = 0
-            for x, y in map_data["Levels"][0]["Blocks"][ground_type] :
-                x = map_data["Levels"][0]["Blocks"][ground_type][i]["x"]
-                y = map_data["Levels"][0]["Blocks"][ground_type][i]["y"]
-                ground0 = Ground(ground_type)
-                ground0.rect.x = x
-                ground0.rect.y = y
-                player.last_block_colide = ground0
-                all_game_sprites_list.add(ground0)
-                ground_list.add(ground0)
-                movable_list.add(ground0)
-                i += 1
+        conf.gen_map(player_list, [player_list, ground_list, movable_list, all_game_sprites_list])
+#        for ground_type in map_data["Levels"][0]["Blocks"] :
+#            i = 0
+#            for x, y in map_data["Levels"][0]["Blocks"][ground_type] :
+#                x = map_data["Levels"][0]["Blocks"][ground_type][i]["x"]
+#                y = map_data["Levels"][0]["Blocks"][ground_type][i]["y"]
+#                ground0 = Ground(ground_type)
+#                ground0.rect.x = x
+#                ground0.rect.y = y
+#                player.last_block_colide = ground0
+#                all_game_sprites_list.add(ground0)
+#                ground_list.add(ground0)
+#                movable_list.add(ground0)
+#                i += 1
 
         ## Start game loop
         while not done_game :

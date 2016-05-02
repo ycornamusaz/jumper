@@ -1,0 +1,6 @@
+Config :
+    Screen :
+        width : 1200
+        height : 1000
+    Map :
+        file : "map.yaml"

@@ -77,5 +77,5 @@ class Ground(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
-        self.rect.y = Config.height - 16 - 94
+        self.rect.y = 1080 - 16 - 94
         self.rect.x = 32
