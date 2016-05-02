@@ -11,7 +11,7 @@ class Pointer(pygame.sprite.Sprite):
         self.image = pygame.image.load("PNG/cursor.png").convert()
 
         ## Set color to white
-        self.image.set_colorkey(Color.BLACK)
+        self.image.set_colorkey(Color.WHITE)
 
         ## Define colide mask
         #self.mask = pygame.mask.from_surface(self.image)

@@ -18,8 +18,8 @@ class Game :
         screen = pygame.display.set_mode([Config.width, Config.height])
         ## Init windows title
         pygame.display.set_caption("JUMPER !!!")
-
-        pygame.mouse.set_visible(True)
+        ## Hide mouse cursor
+        pygame.mouse.set_visible(False)
         ## Init clock
         clock = pygame.time.Clock()
         ## Menu loop stat
@@ -128,7 +128,7 @@ class Game :
         screen = pygame.display.set_mode([Config.width, Config.height])
         ## Init clock
         clock = pygame.time.Clock()
-
+        ## Hide mouse cursor
         pygame.mouse.set_visible(False)
         ## Set background
         background = Background()
