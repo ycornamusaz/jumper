@@ -158,7 +158,7 @@ class Game :
             ground0 = Ground()
             ground0.rect.x = x
             ground0.rect.y = y
-            last_ground = ground0
+            player.last_block_colide = ground0
             all_game_sprites_list.add(ground0)
             ground_list.add(ground0)
             movable_list.add(ground0)
@@ -226,64 +226,9 @@ class Game :
 
             ## Jump process
             player.jump()
-            
-            ## Detect rect colisions between player and ground block
-            ground_player_list = pygame.sprite.spritecollide(player, ground_list, True)
-            ## If a rect colision is detected
-            if ground_player_list != [] :
-                ## For each blocks in colision
-                for ground in ground_player_list :
-                    ## If a bitmap colision is detected
-                    if pygame.sprite.collide_mask(player, ground) != None :
-                        ## If the player is enter into the block by the top
-                        if (player.rect.y + player.height) <= (ground.rect.y + 3) :
-                            ## Set ground value to true
-                            player.reset("on_ground")
-                            ## Set player pos to the top of the block
-                            player.rect.y -= 3
-                            ## Set the block to last block
-                            last_ground = ground
-                        ## If the player is enter into the block by the bottom
-                        elif (player.rect.y) >= (ground.rect.y + ground.height - 30) :
-                            ## Move the player out of the block
-                            player.rect.y += 1 #(ground.rect.y + ground.height )
-                            ## Reset player variables
-                            player.reset("after_jump")
-                            ## Set block to the last block
-                            last_ground = ground
-                            ## Gravity
-                            player.rect.y += 3
-                        ## If the player is enter into the block by the right side
-                        elif (player.rect.x + player.width) > (ground.rect.x) and (player.rect.x + player.width) < (ground.rect.x + ground.width) :
-                            ## Move the player out of the block
-                            player.rect.x -= (5 + player.speed)
-                            ## Gravity
-                            player.rect.y += 3
-                        ## If the player is enter into the block by the left side
-                        elif (player.rect.x) < (ground.rect.x + ground.width) and (player.rect.x) > (ground.rect.x) :
-                            ## Move the player out of the block
-                            player.rect.x += (5 - player.speed)
-                            ## Gravity
-                            player.rect.y += 3
-                    ## If the player isn't on the block or down the block
-                    #elif (player.rect.x + player.width) <= (last_ground.rect.x) or (player.rect.x) >= (last_ground.rect.x + last_ground.width) or (player.rect.y) >= (last_ground.rect.y + last_ground.height) : 
-                    else :
-                        ## Set groud val to 0
-                        player.on_ground = False
-                        ## Gravity
-                        player.rect.y += 3
-                    ## Re-add block to default group
-                    movable_list.add(ground)
-                    ground_list.add(ground)
-                    all_game_sprites_list.add(ground)
 
-
-            ## If the player isn't on the block or down the block
-            elif (player.rect.x + player.width) <= (last_ground.rect.x) or (player.rect.x) >= (last_ground.rect.x + last_ground.width) or (player.rect.y) >= (last_ground.rect.y + last_ground.height) : 
-                ## Set groud val to 0
-                player.on_ground = False
-                ## Gravity
-                player.rect.y += 3
+            ## Detect and manage colisions between player and ground's blocks
+            player.colide_block(ground_list, movable_list, all_game_sprites_list)
 
             ## Update player animation and position
             player.update(direction)

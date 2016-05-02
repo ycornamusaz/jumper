@@ -107,6 +107,67 @@ class Player(pygame.sprite.Sprite):
                 ## Reset values
                 self.reset("after_jump")
 
+########## PLAYER AND BLOCK COLISION DETECTION ##########
+
+    def colide_block(self, block_list, movable_list, all_game_sprites_list) :
+
+        ## Detect rect colisions between player and ground block
+        block_player_list = pygame.sprite.spritecollide(self, block_list, True)
+        ## If a rect colision is detected
+        if block_player_list != [] :
+            ## For each blocks in colision
+            for block in block_player_list :
+                ## If a bitmap colision is detected
+                if pygame.sprite.collide_mask(self, block) != None :
+                    ## If the player is enter into the block by the top
+                    if (self.rect.y + self.height) <= (block.rect.y + 3) :
+                        ## Set ground value to true
+                        self.reset("on_ground")
+                        ## Set player pos to the top of the block
+                        self.rect.y -= 3
+                        ## Set the block to last block
+                        self.last_block_colide = block
+                    ## If the player is enter into the block by the bottom
+                    elif (self.rect.y) >= (block.rect.y + block.height - 30) :
+                        ## Move the player out of the block
+                        self.rect.y += 1 #(block.rect.y + block.height )
+                        ## Reset player variables
+                        self.reset("after_jump")
+                        ## Set block to the last block
+                        self.last_block_colide = block
+                        ## Gravity
+                        self.rect.y += 3
+                    ## If the player is enter into the block by the right side
+                    elif (self.rect.x + self.width) > (block.rect.x) and (self.rect.x + self.width) < (block.rect.x + block.width) :
+                        ## Move the player out of the block
+                        self.rect.x -= (5 + self.speed)
+                        ## Gravity
+                        self.rect.y += 3
+                    ## If the player is enter into the block by the left side
+                    elif (self.rect.x) < (block.rect.x + block.width) and (self.rect.x) > (block.rect.x) :
+                        ## Move the player out of the block
+                        self.rect.x += (5 - self.speed)
+                        ## Gravity
+                        self.rect.y += 3
+                
+                ## If the player isn't on the block or down the block
+                else :
+                    ## Set groud val to 0
+                    self.on_ground = False
+                    ## Gravity
+                    self.rect.y += 3
+                ## Re-add block to default group
+                movable_list.add(block)
+                block_list.add(block)
+                all_game_sprites_list.add(block)
+
+        ## If the player isn't on the block or down the block
+        elif (self.rect.x + self.width) <= (self.last_block_colide.rect.x) or (self.rect.x) >= (self.last_block_colide.rect.x + self.last_block_colide.width) or (self.rect.y) >= (self.last_block_colide.rect.y + self.last_block_colide.height) : 
+            ## Set groud val to 0
+            self.on_ground = False
+            ## Gravity
+            self.rect.y += 3
+
 ########## ANIMATION AND POSITION UPDATE PROCESS ##########
 
     def update(self, run) :
