@@ -151,18 +151,20 @@ class Game :
             map_data = yaml.load(yaml_data)
         
         ## Generate map
-        i = 0
-        for blocks in map_data["Levels"][0]["Blocks"] :
-            x = map_data["Levels"][0]["Blocks"][i]["x"]
-            y = map_data["Levels"][0]["Blocks"][i]["y"]
-            ground0 = Ground()
-            ground0.rect.x = x
-            ground0.rect.y = y
-            player.last_block_colide = ground0
-            all_game_sprites_list.add(ground0)
-            ground_list.add(ground0)
-            movable_list.add(ground0)
-            i += 1
+        
+        for ground_type in map_data["Levels"][0]["Blocks"] :
+            i = 0
+            for x, y in map_data["Levels"][0]["Blocks"][ground_type] :
+                x = map_data["Levels"][0]["Blocks"][ground_type][i]["x"]
+                y = map_data["Levels"][0]["Blocks"][ground_type][i]["y"]
+                ground0 = Ground(ground_type)
+                ground0.rect.x = x
+                ground0.rect.y = y
+                player.last_block_colide = ground0
+                all_game_sprites_list.add(ground0)
+                ground_list.add(ground0)
+                movable_list.add(ground0)
+                i += 1
 
         ## Start game loop
         while not done_game :
