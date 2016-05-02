@@ -1,7 +1,7 @@
 #!/usr/bin/python3.4
 
 import pygame
-import json
+import yaml
 import color
 from player import *
 from ground import *
@@ -147,14 +147,14 @@ class Game :
         ## Add player to movable group
         all_game_sprites_list.add(player)
 
-        with open("map.json") as json_data :
-            map_data = json.load(json_data)
+        with open("map.yaml") as yaml_data :
+            map_data = yaml.load(yaml_data)
         
         ## Generate map
         i = 0
-        for blocks in map_data["Level_1"][0]["Block"] :
-            x = map_data["Level_1"][0]["Block"][i]["x"]
-            y = map_data["Level_1"][0]["Block"][i]["y"]
+        for blocks in map_data["Levels"][0]["Blocks"] :
+            x = map_data["Levels"][0]["Blocks"][i]["x"]
+            y = map_data["Levels"][0]["Blocks"][i]["y"]
             ground0 = Ground()
             ground0.rect.x = x
             ground0.rect.y = y
