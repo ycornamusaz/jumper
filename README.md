@@ -18,6 +18,11 @@ And clone
 Then  go to the directory, buitld and install pygame
 > cd pygame
 
-> python3.4 setup.py build
+> python3 setup.py build
 
-> sudo python3.4 setup.py install
+> sudo python3 setup.py install
+
+And install python3-yaml :
+
+> sudo apt-get install python3-yaml
+
