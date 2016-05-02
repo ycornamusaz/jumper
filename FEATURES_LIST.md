@@ -10,3 +10,4 @@
 - [ ] Add player's life
 - [ ] Level selector
 - [ ] Create an option menu
+- [ ] Add multi-players support --> option menu
