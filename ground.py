@@ -1,5 +1,4 @@
 from color import *
-from config import *
 import pygame
 
 class Ground(pygame.sprite.Sprite):

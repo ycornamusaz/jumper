@@ -4,3 +4,20 @@ Config :
         height : 1000
     Map :
         file : "map.yaml"
+
+    Players : 
+        number : 1
+        
+        Sex :
+            - sex : "male"
+            - sex : "femal"
+
+        Keys :
+            - up : "K_UP"
+              right : "K_RIGHT"
+              left : "K_LEFT"
+
+            - up : "K_w"
+              right : "K_d"
+              left : "K_a"
+

@@ -1,5 +1,4 @@
 from color import *
-from config import *
 import pygame
 
 class Player(pygame.sprite.Sprite):
@@ -78,7 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.animation_time = 0
         
         ## Set player default position
-        self.rect.y = Config.height - 32 - 94 - self.height
+        self.rect.y = 1080 - 32 - 94 - self.height
         self.rect.x = 32
 
 ########### RESET PROCESS ##########
@@ -170,10 +169,10 @@ class Player(pygame.sprite.Sprite):
 
 ########## ANIMATION AND POSITION UPDATE PROCESS ##########
 
-    def update(self, run) :
+    def update(self) :
 
         ## Player animation
-        if run == "right" :
+        if self.speed > 0 :
             ## Each images alternate every 20 frames
             if self.animation_time < 20: 
                 self.image = self.bunny_walk1_r
@@ -184,11 +183,11 @@ class Player(pygame.sprite.Sprite):
             else :
                 self.animation_time = 0
 
-        elif run == "stand" :
+        elif self.speed == 0 :
             self.image = self.bunny_stand
             self.animation_time = 0
 
-        elif run == "left" :
+        elif self.speed < 0 :
             ## Each images alternate every 20 frames
             if self.animation_time < 20: 
                 self.image = self.bunny_walk1_l

@@ -15,3 +15,7 @@ Levels :
         wood :
             - x : 1832
               y : 590
+      Player :
+        x : 40
+        y : 600
+
