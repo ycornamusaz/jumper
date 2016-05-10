@@ -5,10 +5,10 @@
 - [x] Stock levels into file
 - [x] Add multi-players support --> option menu
 - [x] Add a "game over" screen
+- [x] Add player's life
 - [ ] Bitmap colision (menu)
 - [ ] Add player's enemys
 - [ ] Add custom level editor
-- [ ] Add player's life
 - [ ] Level selector
 - [ ] Create an option menu
 - [ ] Can modify easily jump height
