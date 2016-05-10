@@ -208,21 +208,20 @@ class Game :
             for i in player :
                 ## Quit game if player is out of screen
                 if player[i].rect.y > Config.height :
-                    done_game = True
-                
-                if (player[i].rect.x + player[i].width) > (Config.width - Config.width/3) :
-                    for test in movable_list :
-                        test.rect.x -= 5
-                if player[i].rect.x < (Config.width/16) :
-                    for test in movable_list :
-                        test.rect.x += 5
-    
+                    conf.reset_level(player[i], movable_list)
+                    player[i].reset("after_jump")
+                    done_game = player[i].lose_life()
+
+                conf.move_map(player[i], movable_list)
+
                 ## Jump process
                 player[i].jump()
     
                 ## Detect and manage colisions between player and ground's blocks
                 player[i].colide_block(ground_list, movable_list, all_game_sprites_list)
-    
+
+                player[i].gravity(ground_list, movable_list, all_game_sprites_list, 3)
+
                 ## Update player animation and position
                 player[i].update()
         
@@ -236,7 +235,9 @@ class Game :
             
             ## Draw all sprites to the screen
             all_game_sprites_list.draw(screen)
-        
+            for i in player :
+                player[i].display_life(screen)
+
             ########## REFRESH SCREEN ZONE ##########
         
             ## Refresh screen
@@ -359,4 +360,4 @@ class Game :
             ## Set game ticks (per second)
             clock.tick(60)
 
-Game.menu() 
+Game.menu()

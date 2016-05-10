@@ -1,5 +1,7 @@
+from heart import *
 from color import *
 import pygame
+import pdb
 
 class Player(pygame.sprite.Sprite):
 
@@ -73,6 +75,9 @@ class Player(pygame.sprite.Sprite):
         self.speed_base = 5
         self.speed = 0
 
+        ## Set player's life
+        self.life = 3
+
         ## Set time to incremant animation
         self.animation_time = 0
         
@@ -92,6 +97,30 @@ class Player(pygame.sprite.Sprite):
             self.in_jump = False
             self.c = self.c_base
             self.on_ground = True
+
+    def gravity(self, block_list, movable_list, all_game_sprites_list, power):
+        #pdb.set_trace()
+        self.rect.y += 1
+        ## Detect rect colisions between player and ground block
+        block_player_list = pygame.sprite.spritecollide(self, block_list, True)
+        if block_player_list != [] :
+            for block in block_player_list :
+                if pygame.sprite.collide_mask(self, block) != None :
+                    self.reset("on_ground")
+            
+            movable_list.add(block)
+            block_list.add(block)
+            all_game_sprites_list.add(block)
+
+        else :
+            self.on_ground = False
+
+        self.rect.y -= 1
+
+        if self.on_ground == False :
+            ## Gravity
+            self.rect.y += power
+
 
 ########### JUMP PROCESS ##########
 
@@ -119,17 +148,17 @@ class Player(pygame.sprite.Sprite):
                 ## If a bitmap colision is detected
                 if pygame.sprite.collide_mask(self, block) != None :
                     ## If the player is enter into the block by the top
-                    if (self.rect.y + self.height) <= (block.rect.y + 3) :
+                    if (self.rect.y + self.height) < (block.rect.y + 3) :
                         ## Set ground value to true
                         self.reset("on_ground")
                         ## Set player pos to the top of the block
-                        self.rect.y -= 3
+                        self.rect.y -= 1 
                         ## Set the block to last block
                         self.last_block_colide = block
                     ## If the player is enter into the block by the bottom
                     elif (self.rect.y) >= (block.rect.y + block.height - 30) :
                         ## Move the player out of the block
-                        self.rect.y += 1 #(block.rect.y + block.height )
+                        self.rect.y += 1
                         ## Reset player variables
                         self.reset("after_jump")
                         ## Set block to the last block
@@ -137,35 +166,30 @@ class Player(pygame.sprite.Sprite):
                         ## Gravity
                         self.rect.y += 3
                     ## If the player is enter into the block by the right side
-                    elif (self.rect.x + self.width) > (block.rect.x) and (self.rect.x + self.width) < (block.rect.x + block.width) :
+                    elif (self.rect.x + self.width) > (block.rect.x) and (self.rect.x + self.width) < (block.rect.x + block.width/2) :
                         ## Move the player out of the block
                         self.rect.x -= (5 + self.speed)
                         ## Gravity
-                        self.rect.y += 3
+                        self.gravity(block_list, movable_list, all_game_sprites_list, 3)
                     ## If the player is enter into the block by the left side
-                    elif (self.rect.x) < (block.rect.x + block.width) and (self.rect.x) > (block.rect.x) :
+                    elif (self.rect.x) < (block.rect.x + block.width) and (self.rect.x) > (block.rect.x + block.width - block.width/2) :
                         ## Move the player out of the block
                         self.rect.x += (5 - self.speed)
                         ## Gravity
-                        self.rect.y += 3
+                        self.gravity(block_list, movable_list, all_game_sprites_list, 3)
                 
                 ## If the player isn't on the block or down the block
-                else :
-                    ## Set groud val to 0
-                    self.on_ground = False
-                    ## Gravity
-                    self.rect.y += 3
+                elif self.on_ground == False :
+                    self.gravity(block_list, movable_list, all_game_sprites_list, 3)
+
                 ## Re-add block to default group
                 movable_list.add(block)
                 block_list.add(block)
                 all_game_sprites_list.add(block)
 
         ## If the player isn't on the block or down the block
-        elif (self.rect.x + self.width) <= (self.last_block_colide.rect.x) or (self.rect.x) >= (self.last_block_colide.rect.x + self.last_block_colide.width) or (self.rect.y) >= (self.last_block_colide.rect.y + self.last_block_colide.height) : 
-            ## Set groud val to 0
-            self.on_ground = False
-            ## Gravity
-            self.rect.y += 3
+        #else : ##(self.rect.x + self.width) <= (self.last_block_colide.rect.x) or (self.rect.x) >= (self.last_block_colide.rect.x + self.last_block_colide.width) or (self.rect.y) >= (self.last_block_colide.rect.y + self.last_block_colide.height) : 
+        #    self.gravity(3)
 
 ########## ANIMATION AND POSITION UPDATE PROCESS ##########
 
@@ -174,7 +198,7 @@ class Player(pygame.sprite.Sprite):
         ## Player animation
         if self.speed > 0 :
             ## Each images alternate every 20 frames
-            if self.animation_time < 20: 
+            if self.animation_time < 20 :
                 self.image = self.bunny_walk1_r
                 self.animation_time += 1
             elif self.animation_time < 40 :
@@ -203,4 +227,31 @@ class Player(pygame.sprite.Sprite):
 
         ## Update player position
         self.rect.x += self.speed
+
+########## DISPLAY PLAYER'S LIFE ##########
+
+    def creat_life(self) :
+        self.life_sprite = pygame.sprite.Group()
+
+        self.heart = {}
+
+        for i in range(self.life) :
+            i += 1
+            self.heart[i] = Heart()
+            self.heart[i].rect.y = 10
+            self.heart[i].rect.x = 10*i + 50*(i - 1) 
+        
+            self.life_sprite.add(self.heart[i])
+
+    def display_life(self, screen) :
+        self.creat_life()
+        self.life_sprite.draw(screen)
+
+    def lose_life(self) :
+        self.life -= 1
+        self.life_sprite.empty()
+        if self.life < 0 :
+            return True
+        else :
+            return False
 
