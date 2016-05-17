@@ -1,3 +1,4 @@
+import pygame
 from ground import *
 from config import *
 from pygame import *
@@ -131,4 +132,33 @@ class Engine() :
             for entity in liste :
                 entity.rect.x += 5
             self.shift += 5
+
+########## BUTON UPDATE ##########
+
+    def update_selected_buton(self, buton_list, pointer, groups) :
+
+        ## Detect rect colision between pointer and buton group
+        buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
+        
+        ## If a rect colision is detected
+        if buton_pointer_list != [] : 
+            ## For each buton who are in colision with pointer
+            for buton in buton_pointer_list :
+                if pygame.sprite.collide_mask(pointer, buton) != None :
+                    ## Update text Color to red
+                    if buton.color != Color.RED :
+                        buton.update(buton.text , Color.RED)
+                else :
+                    ## Update text Color to white
+                    if buton.color != Color.WHITE :
+                        buton.update(buton.text, Color.WHITE)
+
+                ## Re-add buton to sprite list
+                for group in groups :
+                    group.add(buton)
+        else :
+            for buton in buton_list :
+                ## Update text Color to white
+                if buton.color != Color.WHITE :
+                    buton.update(buton.text, Color.WHITE)
 

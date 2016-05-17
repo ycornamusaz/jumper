@@ -18,9 +18,6 @@ class Buton(pygame.sprite.Sprite):
         self.image_1 = pygame.transform.scale(self.image_1, [int(self.image_1.get_width()*self.conf.factor), int(self.image_1.get_height()*self.conf.factor)])
         self.image = pygame.Surface([self.image_1.get_width(),self.image_1.get_height()])
 
-        ## Set mask
-        self.mask = pygame.mask.from_surface(self.image)
-
         ## Set the background to transparent
         self.image.set_colorkey(Color.BLACK)
 
@@ -34,6 +31,9 @@ class Buton(pygame.sprite.Sprite):
         self.rect.y = 32
 
         self.update(text, color_txt)
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, text, color_txt):
 
@@ -51,3 +51,6 @@ class Buton(pygame.sprite.Sprite):
         ## Fuse text object with the buton
         self.image.blit(self.image_1, [0,0])
         self.image.blit(self.textSurf, [(self.width/2 - self.text_width/2), (self.height/2 - self.text_height/2)])
+
+
+

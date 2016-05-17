@@ -14,7 +14,7 @@ class Pointer(pygame.sprite.Sprite):
         self.image.set_colorkey(Color.WHITE)
 
         ## Define colide mask
-        #self.mask = pygame.mask.from_surface(self.image)
+        self.mask = pygame.mask.from_surface(self.image)
 
         ## Get sprite position
         self.rect = self.image.get_rect()

@@ -17,6 +17,8 @@ class Game :
         pygame.init()
         ## Initialise external data configuration
         conf = Config()
+        ## Create engine
+        engine = Engine()
         ## Init screen
         screen = pygame.display.set_mode([conf.width, conf.height], conf.get_screen())
         ## Init windows title
@@ -33,8 +35,11 @@ class Game :
         ## Create menu sprite group
         buton_list = pygame.sprite.Group()
         all_menu_sprites_list = pygame.sprite.Group()
+        pointer_list = pygame.sprite.Group()
         ## Create pointer sprite
         pointer = Pointer()
+        ## Add pointer to pointer's list
+        pointer_list.add(pointer)
         ## Add pointer to menu sprite's group
         all_menu_sprites_list.add(pointer)
         ## Create butons
@@ -71,12 +76,13 @@ class Game :
                     if event.button == 1 :
                         buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
                         for buton in buton_pointer_list :
-                            if buton.text is "Play" :
-                                start_game = True
+                            if pygame.sprite.collide_mask(pointer, buton) != None :
+                                if buton.text is "Play" :
+                                    start_game = True
 
-                            elif buton.text is "Options" :
-                                buton.text = "This is currently not implemented"
-                                buton.update("This is currently not implemented", Color.WHITE)
+                                elif buton.text is "Options" :
+                                    buton.text = "This is currently not implemented"
+                                    buton.update("This is currently not implemented", Color.WHITE)
 
                             all_menu_sprites_list.add(buton)
                             buton_list.add(buton)
@@ -93,28 +99,10 @@ class Game :
             pos = pygame.mouse.get_pos()
             pointer.rect.x = pos[0]
             pointer.rect.y = pos[1]
-            
-            ## Detect rect colision between pointer and buton group
-            buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
-            
-            ## If a rect colision is detected
-            if buton_pointer_list != [] : 
-                ## For each buton who are in colision with pointer
-                for buton in buton_pointer_list :
-                    ## Update text Color to red
-                    if buton.color != Color.RED :
-                        buton.update(buton.text , Color.RED)
-                    ## Re-add buton to sprite list
-                    buton_list.add(buton)
-                    all_menu_sprites_list.add(buton)
-            ## If not
-            else :
-                ## For all butons 
-                for buton in buton_list :
-                    ## Update text Color to white
-                    if buton.color != Color.WHITE :
-                        buton.update(buton.text, Color.WHITE)
-            
+
+            ## Detect bitmap colision between butons and pointer
+            engine.update_selected_buton(buton_list, pointer, [all_menu_sprites_list, buton_list])
+
             ########## CLEAR SCREEN ZONE ##########
         
             ## Set the background
@@ -124,6 +112,7 @@ class Game :
             
             ## Draw all sprites to the screen
             all_menu_sprites_list.draw(screen)
+            pointer_list.draw(screen)
         
             ########## REFRESH SCREEN ZONE ##########
         
@@ -257,6 +246,8 @@ class Game :
     
         ## Load config file
         conf = Config()
+        ## Create engine
+        engine = Engine()
         ## Init pygame
         pygame.init()
         ## Init screen
@@ -273,10 +264,13 @@ class Game :
         background_red = Background()
         background_red.game_over()
         ## Create menu sprite group
+        pointer_list = pygame.sprite.Group()
         buton_list = pygame.sprite.Group()
         all_game_over_sprites_list = pygame.sprite.Group()
         ## Create pointer sprite
         pointer = Pointer()
+        ## Add pointer to pointer's list
+        pointer_list.add(pointer)
         ## Add pointer to menu sprite's group
         all_game_over_sprites_list.add(pointer)
         ## Create butons
@@ -313,12 +307,13 @@ class Game :
                     if event.button == 1 :
                         buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
                         for buton in buton_pointer_list :
-                            if buton.text is "Restart" :
-                                return True
-                                done_game_over = True
-                            elif buton.text is "Quit" :
-                                done_game_over = True
-                                return None
+                            if pygame.sprite.collide_mask(pointer, buton) != None :
+                                if buton.text is "Restart" :
+                                    return True
+                                    done_game_over = True
+                                elif buton.text is "Quit" :
+                                    done_game_over = True
+                                    return None
 
                             all_game_over_sprites_list.add(buton)
                             buton_list.add(buton)
@@ -330,27 +325,9 @@ class Game :
             pointer.rect.x = pos[0]
             pointer.rect.y = pos[1]
             
-            ## Detect rect colision between pointer and buton group
-            buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
-            
-            ## If a rect colision is detected
-            if buton_pointer_list != [] : 
-                ## For each buton who are in colision with pointer
-                for buton in buton_pointer_list :
-                    ## Update text Color to red
-                    if buton.color != Color.RED :
-                        buton.update(buton.text , Color.RED)
-                    ## Re-add buton to sprite list
-                    buton_list.add(buton)
-                    all_game_over_sprites_list.add(buton)
-            ## If not
-            else :
-                ## For all butons 
-                for buton in buton_list :
-                    ## Update text Color to white
-                    if buton.color != Color.WHITE :
-                        buton.update(buton.text, Color.WHITE)
-            
+            ## Detect bitmap colision between butons and pointer
+            engine.update_selected_buton(buton_list, pointer, [all_game_over_sprites_list, buton_list])
+
             ########## CLEAR SCREEN ZONE ##########
         
             ## Set the background
@@ -360,7 +337,8 @@ class Game :
             
             ## Draw all sprites to the screen
             all_game_over_sprites_list.draw(screen)
-        
+            pointer_list.draw(screen)
+
             ########## REFRESH SCREEN ZONE ##########
         
             ## Refresh screen
