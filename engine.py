@@ -66,7 +66,7 @@ class Engine() :
 
                 ## Read x and y axes
                 x = self.map_data["Levels"][0]["Blocks"][ground_type][i]["x"]*self.conf.factor
-                y = self.map_data["Levels"][0]["Blocks"][ground_type][i]["y"]*self.conf.factor
+                y = (1000 - self.map_data["Levels"][0]["Blocks"][ground_type][i]["y"])*self.conf.factor
                 
                 ## Create block
                 ground0 = Ground(ground_type)
@@ -83,7 +83,7 @@ class Engine() :
 
                     ## Set the player position
                     player.rect.x = self.map_data["Levels"][0]["Player"]["x"]*self.conf.factor
-                    player.rect.y = self.map_data["Levels"][0]["Player"]["y"]*self.conf.factor
+                    player.rect.y = (1000 - self.map_data["Levels"][0]["Player"]["y"])*self.conf.factor
 
                 ## For each groups 
                 for group in groups :
@@ -104,7 +104,7 @@ class Engine() :
 
             ## Reset the player position
             player.rect.x = self.map_data["Levels"][0]["Player"]["x"]*self.conf.factor
-            player.rect.y = self.map_data["Levels"][0]["Player"]["y"]*self.conf.factor
+            player.rect.y = (1000 - self.map_data["Levels"][0]["Player"]["y"])*self.conf.factor
 
             ## Set the player state to "not on the ground"
             player.on_ground = False

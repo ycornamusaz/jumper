@@ -2,20 +2,20 @@ Levels :
     - Blocks :
         grass :
             - x : 32
-              y : 890
+              y : 110
         stone :
             - x : 32
-              y : 490
+              y : 510
         snow :
             - x : 632
-              y : 790
+              y : 210
         sand :
             - x : 1232
-              y : 690
+              y : 310
         wood :
             - x : 1832
-              y : 590
+              y : 410
       Player :
         x : 40
-        y : 600
+        y : 400
 
