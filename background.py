@@ -4,6 +4,8 @@ import pygame
 
 class Background() :
     def __init__(self) :
+        ## Load config file
+        conf = Config()
 
         ## Import background pictures (don't convert picture to pygame format to keep transarence)
         self.bg1_base = pygame.image.load("PNG/Background/bg_layer1.png")
@@ -13,14 +15,14 @@ class Background() :
         self.bg_game_over = pygame.image.load("PNG/Background/red.png")
 
         ## Creat background surface
-        self.bg = pygame.Surface([Config.width, Config.height])
+        self.bg = pygame.Surface([conf.width, conf.height])
 
         ## Resize background picturesd
-        self.bg1 = pygame.transform.scale(self.bg1_base, (Config.width, Config.height))
-        self.bg2 = pygame.transform.scale(self.bg2_base, (Config.width, Config.height))
-        self.bg3 = pygame.transform.scale(self.bg3_base, (Config.width, Config.height))
-        self.bg4 = pygame.transform.scale(self.bg4_base, (Config.width, Config.height))
-        self.bg_game_over = pygame.transform.scale(self.bg_game_over, (Config.width, Config.height))
+        self.bg1 = pygame.transform.scale(self.bg1_base, (conf.width, conf.height))
+        self.bg2 = pygame.transform.scale(self.bg2_base, (conf.width, conf.height))
+        self.bg3 = pygame.transform.scale(self.bg3_base, (conf.width, conf.height))
+        self.bg4 = pygame.transform.scale(self.bg4_base, (conf.width, conf.height))
+        self.bg_game_over = pygame.transform.scale(self.bg_game_over, (conf.width, conf.height))
 
         ## Fuse background onto background surface
         self.reset()

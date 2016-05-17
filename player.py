@@ -1,7 +1,9 @@
 from heart import *
 from color import *
+from config import *
 import pygame
 import pdb
+import math
 
 class Player(pygame.sprite.Sprite):
 
@@ -10,6 +12,10 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, skin):
         ## Call the parent class (Sprite) constructor
         super().__init__()
+
+        skin_list = []
+
+        self.conf = Config()
 
         ## Skin choice
         if skin == "male" :
@@ -20,16 +26,6 @@ class Player(pygame.sprite.Sprite):
             self.bunny_walk1_l = pygame.image.load("PNG/Players/bunny1_walk1_l.png").convert()
             self.bunny_walk2_l = pygame.image.load("PNG/Players/bunny1_walk2_l.png").convert()
 
-            ## Set texture background to transparent
-            self.bunny_stand.set_colorkey(Color.BLACK)
-            self.bunny_walk1_r.set_colorkey(Color.BLACK)
-            self.bunny_walk2_r.set_colorkey(Color.BLACK)
-            self.bunny_walk1_l.set_colorkey(Color.BLACK)
-            self.bunny_walk2_l.set_colorkey(Color.BLACK)
-
-            ## Set texture
-            self.image = self.bunny_stand
-
         elif skin == "femal" :
             ## Import textures
             self.bunny_stand = pygame.image.load("PNG/Players/bunny2_stand.png").convert()
@@ -38,19 +34,26 @@ class Player(pygame.sprite.Sprite):
             self.bunny_walk1_l = pygame.image.load("PNG/Players/bunny2_walk1_l.png").convert()
             self.bunny_walk2_l = pygame.image.load("PNG/Players/bunny2_walk2_l.png").convert()
 
-            ## Set texture background to transparent
-            self.bunny_stand.set_colorkey(Color.BLACK)
-            self.bunny_walk1_r.set_colorkey(Color.BLACK)
-            self.bunny_walk2_r.set_colorkey(Color.BLACK)
-            self.bunny_walk1_l.set_colorkey(Color.BLACK)
-            self.bunny_walk2_l.set_colorkey(Color.BLACK)
+        ## Resize images
+        self.bunny_stand = pygame.transform.scale(self.bunny_stand, [int(self.bunny_stand.get_width()*self.conf.factor), int(self.bunny_stand.get_height()*self.conf.factor)])
+        self.bunny_walk1_r = pygame.transform.scale(self.bunny_walk1_r, [int(self.bunny_walk1_r.get_width()*self.conf.factor), int(self.bunny_walk1_r.get_height()*self.conf.factor)])
+        self.bunny_walk2_r = pygame.transform.scale(self.bunny_walk2_r, [int(self.bunny_walk2_r.get_width()*self.conf.factor), int(self.bunny_walk2_r.get_height()*self.conf.factor)])
+        self.bunny_walk1_l = pygame.transform.scale(self.bunny_walk1_l, [int(self.bunny_walk1_l.get_width()*self.conf.factor), int(self.bunny_walk1_l.get_height()*self.conf.factor)])
+        self.bunny_walk2_l = pygame.transform.scale(self.bunny_walk2_l, [int(self.bunny_walk2_l.get_width()*self.conf.factor), int(self.bunny_walk2_l.get_height()*self.conf.factor)])
 
-            ## Set texture
-            self.image = self.bunny_stand
-        
+        ## Set texture background to transparent
+        self.bunny_stand.set_colorkey(Color.BLACK)
+        self.bunny_walk1_r.set_colorkey(Color.BLACK)
+        self.bunny_walk2_r.set_colorkey(Color.BLACK)
+        self.bunny_walk1_l.set_colorkey(Color.BLACK)
+        self.bunny_walk2_l.set_colorkey(Color.BLACK)
+       
+        ## Set texture
+        self.image = self.bunny_stand
+
         ## Set mask
         self.mask = pygame.mask.from_surface(self.image)
-
+        
         ## Get sprite position
         self.rect = self.image.get_rect()
 
@@ -68,11 +71,13 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False
 
         ## Set value for calculating jump
-        self.c_base = -109
+        self.jump_height = 300
+        self.jump_power = 4
+        self.c_base = int(-(math.sqrt(self.jump_height)*10))
         self.c = self.c_base
 
         ## Set player speed base
-        self.speed_base = 5
+        self.speed_base = 8
         self.speed = 0
 
         ## Set player's life
@@ -92,7 +97,7 @@ class Player(pygame.sprite.Sprite):
             self.in_jump = False
             self.c = self.c_base
             self.on_ground = False
-            self.rect.y += 9
+            #self.rect.y += 9
         elif stat == "on_ground" :
             self.in_jump = False
             self.c = self.c_base
@@ -128,10 +133,12 @@ class Player(pygame.sprite.Sprite):
         ## Player jump process
         if self.in_jump == True :
             if (self.c < -(self.c_base)) :
-                self.rect.y = (self.last_y - (-(self.c/10)**2+120))
-                self.c += 3
+                self.rect.y = (self.last_y - (-(self.c/10)**2+self.jump_height))
+                self.c += self.jump_power
                 self.on_ground = False
             else :
+                self.c -= self.c*2
+                self.rect.y -= (-(self.c/10)**2+self.jump_height)
                 ## Reset values
                 self.reset("after_jump")
 
@@ -148,11 +155,11 @@ class Player(pygame.sprite.Sprite):
                 ## If a bitmap colision is detected
                 if pygame.sprite.collide_mask(self, block) != None :
                     ## If the player is enter into the block by the top
-                    if (self.rect.y + self.height) < (block.rect.y + 3) :
+                    if (self.rect.y + self.height) < (block.rect.y + 3 + (-(self.c/10)**2+self.jump_height)) :
                         ## Set ground value to true
                         self.reset("on_ground")
                         ## Set player pos to the top of the block
-                        self.rect.y -= 1 
+                        self.rect.y = block.rect.y - self.height
                         ## Set the block to last block
                         self.last_block_colide = block
                     ## If the player is enter into the block by the bottom
@@ -199,7 +206,7 @@ class Player(pygame.sprite.Sprite):
         if self.speed > 0 :
             ## Each images alternate every 20 frames
             if self.animation_time < 20 :
-                self.image = self.bunny_walk1_r
+                self.image = self.bunny_walk1_r 
                 self.animation_time += 1
             elif self.animation_time < 40 :
                 self.animation_time += 1
@@ -221,9 +228,6 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.bunny_walk2_l
             else :
                 self.animation_time = 0
-
-        ## Set mask
-        self.mask = pygame.mask.from_surface(self.image)
 
         ## Update player position
         self.rect.x += self.speed

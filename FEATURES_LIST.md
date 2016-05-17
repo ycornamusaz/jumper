@@ -6,6 +6,7 @@
 - [x] Add multi-players support --> option menu
 - [x] Add a "game over" screen
 - [x] Add player's life
+- [ ] Add multi-resolution support
 - [ ] Bitmap colision (menu)
 - [ ] Add player's enemys
 - [ ] Add custom level editor

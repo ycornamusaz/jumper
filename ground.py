@@ -1,3 +1,4 @@
+from config import *
 from color import *
 import pygame
 
@@ -6,7 +7,9 @@ class Ground(pygame.sprite.Sprite):
     def __init__(self, ground_type):
         ## Call the parent class (Sprite) constructor
         super().__init__()
-        
+        ## Load config file
+        conf = Config()
+
         ## Import picture
         if ground_type == "grass" :
             self.image = pygame.image.load("PNG/Environment/ground_grass.png").convert()
@@ -61,6 +64,9 @@ class Ground(pygame.sprite.Sprite):
             print("    small_broken_stone\r\n    cake\r\n    small_cake\r\n    broken_cake\r\n    small_broken_cake\r\n    snow\r\n    small_snow\r\n    broken_snow")
             print("    small_broken_snow\r\n    sand\r\n    small_sand\r\n    broken_sand\r\n    small_broken_sand\r\n    wood\r\n    small_wood\r\n    broken_wood")
             print("    small_broken_wood")
+
+        self.image = pygame.transform.scale(self.image, [int(self.image.get_width()*conf.factor), int(self.image.get_height()*conf.factor)])
+
         ## Set the background to transparent
         self.image.set_colorkey(Color.BLACK)
 
@@ -78,3 +84,4 @@ class Ground(pygame.sprite.Sprite):
 
         self.rect.y = 1080 - 16 - 94
         self.rect.x = 32
+

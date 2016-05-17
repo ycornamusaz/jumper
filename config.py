@@ -1,45 +1,45 @@
 import yaml
 import pygame 
 from player import *
-from ground import Ground
 
 
 class Config() :
     ## Define screen size
-    width = 1200
-    height = 1000
+    width_base = 1800
+    height_base = 1000
 
-    def __init__(self, config_file) :
+    def __init__(self) :
         
-        with open(config_file) as config_data :
+        with open("config.yaml") as config_data :
             self.config_data = yaml.load(config_data)
 
-        with open(self.config_data["Config"]["Map"]["file"]) as map_data :
-            self.map_data = yaml.load(map_data)
+        self.width = self.config_data["Config"]["Screen"]["width"]
+        self.height = self.config_data["Config"]["Screen"]["height"]
+        self.factor = self.width/self.width_base
 
-        self.shift = 0
+    def get_config_data(self) :
 
-    def gen_blocks(self, players, groups) :
+        return self.config_data
+
+    def get_screen(self) :
+
+        if self.config_data["Config"]["Screen"]["state"] == 'FULLSCREEN' :
+            
+            return pygame.FULLSCREEN
         
-        for ground_type in self.map_data["Levels"][0]["Blocks"] :
-            i = 0
-            for x, y in self.map_data["Levels"][0]["Blocks"][ground_type] :
-                x = self.map_data["Levels"][0]["Blocks"][ground_type][i]["x"]
-                y = self.map_data["Levels"][0]["Blocks"][ground_type][i]["y"]
-                ground0 = Ground(ground_type)
-                ground0.rect.x = x
-                ground0.rect.y = y
+        elif self.config_data["Config"]["Screen"]["state"] == 'OPENGL' :
+            
+            return pygame.OPENGL
 
-                for player in players :
-                    player.last_block_colide = ground0
-                    player.rect.x = self.map_data["Levels"][0]["Player"]["x"]
-                    player.rect.y = self.map_data["Levels"][0]["Player"]["y"]
+        elif self.config_data["Config"]["Screen"]["state"] == 'HWSURFACE' :
 
-                for group in groups :
-                    group.add(ground0)
-                i += 1
+            return pygame.HWSURFACE
 
-    def gen_players(self, players, groups) :
+        else :
+            
+            return eval(self.config_data["Config"]["Screen"]["state"])
+
+    def conf_players(self, players, groups) :
         i = 0
         player = {}
         for i in range(self.config_data["Config"]["Players"]["number"]) :
@@ -53,23 +53,4 @@ class Config() :
                 group.add(player[i])
 
         return player
-
-    def reset_level(self, player, liste) :
-        for entity in liste :
-            entity.rect.x -= self.shift
-            player.rect.x = self.map_data["Levels"][0]["Player"]["x"]
-            player.rect.y = self.map_data["Levels"][0]["Player"]["y"]
-            player.on_ground = False
-
-        self.shift = 0
-
-    def move_map(self, player, liste) : 
-        if (player.rect.x + player.width) > (Config.width - Config.width/3) :
-            for entity in liste :
-                entity.rect.x -= 5
-            self.shift -= 5
-        if player.rect.x < (Config.width/16) :
-            for entity in liste :
-                entity.rect.x += 5
-            self.shift += 5
 

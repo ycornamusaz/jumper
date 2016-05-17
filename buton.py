@@ -7,10 +7,14 @@ class Buton(pygame.sprite.Sprite):
     def __init__(self, text, color_txt):
         ## Call the parent class (Sprite) constructor
         super().__init__()
+        
+        ## Load config file
+        self.conf = Config()
 
         ## Import picture
         self.image_1 = pygame.image.load("PNG/Environment/ground_grass.png").convert()
-
+        
+        self.image_1 = pygame.transform.scale(self.image_1, [int(self.image_1.get_width()*self.conf.factor), int(self.image_1.get_height()*self.conf.factor)])
         self.image = pygame.Surface([self.image_1.get_width(),self.image_1.get_height()])
 
         self.mask = pygame.mask.from_surface(self.image)
@@ -24,7 +28,7 @@ class Buton(pygame.sprite.Sprite):
         ## Get sprite width and height
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.rect.x = (Config.width/2 - self.width/2)
+        self.rect.x = (self.conf.width/2 - self.width/2)
         self.rect.y = 32
 
         self.update(text, color_txt)
@@ -36,7 +40,7 @@ class Buton(pygame.sprite.Sprite):
         ## Update text color
         self.color = color_txt
         ## Set font and font size
-        self.font = pygame.font.SysFont("Ubuntu", 25)
+        self.font = pygame.font.SysFont("Ubuntu", int(25*self.conf.factor))
         ## Creat text object
         self.textSurf = self.font.render(self.text, 1, self.color)
         ## Get the text object width and height

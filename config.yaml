@@ -1,7 +1,8 @@
 Config :
     Screen :
-        width : 1200
-        height : 1000
+        state : "FULLSCREEN"
+        width : 1920
+        height : 1080
     Map :
         file : "map.yaml"
 

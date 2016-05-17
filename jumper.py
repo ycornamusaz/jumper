@@ -9,13 +9,16 @@ from config import *
 from buton import *
 from pointer import *
 from background import *
+from engine import *
 
 class Game :
     def menu():
         ## Init pygame
         pygame.init()
+        ## Initialise external data configuration
+        conf = Config()
         ## Init screen
-        screen = pygame.display.set_mode([Config.width, Config.height])
+        screen = pygame.display.set_mode([conf.width, conf.height], conf.get_screen())
         ## Init windows title
         pygame.display.set_caption("JUMPER !!!")
         ## Hide mouse cursor
@@ -38,11 +41,11 @@ class Game :
         buton1 = Buton("Play", Color.WHITE)
         buton2 = Buton("Options", Color.WHITE)
         ## Set buton1 pos
-        buton1.rect.x = (Config.width/2 - buton1.width/2)
-        buton1.rect.y = (Config.height/2 - buton1.height/2 - 100)
+        buton1.rect.x = (conf.width/2 - buton1.width/2)
+        buton1.rect.y = (conf.height/2 - buton1.height/2 - 100)
         ## Set buton2 pos
-        buton2.rect.x = (Config.width/2 - buton2.width/2)
-        buton2.rect.y = (Config.height/2 - buton2.height/2 + 100)
+        buton2.rect.x = (conf.width/2 - buton2.width/2)
+        buton2.rect.y = (conf.height/2 - buton2.height/2 + 100)
         ## Add butons to buton list
         buton_list.add(buton1)
         buton_list.add(buton2)
@@ -131,8 +134,12 @@ class Game :
             clock.tick(60)
     
     def game() :
+        ## Load config file
+        conf = Config()
+        ## Create engine
+        engine = Engine()
         ## Init screen        
-        screen = pygame.display.set_mode([Config.width, Config.height])
+        screen = pygame.display.set_mode([conf.width, conf.height], conf.get_screen())
         ## Init clock
         clock = pygame.time.Clock()
         ## Hide mouse cursor
@@ -141,7 +148,7 @@ class Game :
         background = Background()
         
         ## Load config file
-        conf = Config("config.yaml")
+        #conf = Config("config.yaml")
         
         ## Set game loop stat
         done_game = False
@@ -152,11 +159,11 @@ class Game :
         movable_list = pygame.sprite.Group()
         all_game_sprites_list = pygame.sprite.Group()
 
-        ## Gen players
-        player = conf.gen_players(player_list, [movable_list, all_game_sprites_list])
+        ## Configurate players
+        player = engine.conf_players(player_list, [movable_list, all_game_sprites_list])
 
         ## Generate map
-        conf.gen_blocks(player_list, [ground_list, movable_list, all_game_sprites_list])
+        engine.gen_blocks(player_list, [ground_list, movable_list, all_game_sprites_list])
 
         ## Start game loop
         while not done_game :
@@ -207,12 +214,12 @@ class Game :
             
             for i in player :
                 ## Quit game if player is out of screen
-                if player[i].rect.y > Config.height :
-                    conf.reset_level(player[i], movable_list)
+                if player[i].rect.y > conf.height :
+                    engine.reset_level(player[i], movable_list)
                     player[i].reset("after_jump")
                     done_game = player[i].lose_life()
 
-                conf.move_map(player[i], movable_list)
+                engine.move_map(player[i], movable_list)
 
                 ## Jump process
                 player[i].jump()
@@ -247,11 +254,13 @@ class Game :
             clock.tick(120)
 
     def game_over() :
-
+    
+        ## Load config file
+        conf = Config()
         ## Init pygame
         pygame.init()
         ## Init screen
-        screen = pygame.display.set_mode([Config.width, Config.height])
+        screen = pygame.display.set_mode([conf.width, conf.height], conf.get_screen())
         ## Init windows title
         pygame.display.set_caption("JUMPER !!!")
         ## Hide mouse cursor
@@ -274,11 +283,11 @@ class Game :
         buton1 = Buton("Restart", Color.WHITE)
         buton2 = Buton("Quit", Color.WHITE)
         ## Set buton1 pos
-        buton1.rect.x = (Config.width/2 - buton1.width/2)
-        buton1.rect.y = (Config.height/2 - buton1.height/2 - 100)
+        buton1.rect.x = (conf.width/2 - buton1.width/2)
+        buton1.rect.y = (conf.height/2 - buton1.height/2 - 100)
         ## Set buton2 pos
-        buton2.rect.x = (Config.width/2 - buton2.width/2)
-        buton2.rect.y = (Config.height/2 - buton2.height/2 + 100)
+        buton2.rect.x = (conf.width/2 - buton2.width/2)
+        buton2.rect.y = (conf.height/2 - buton2.height/2 + 100)
         ## Add butons to buton list
         buton_list.add(buton1)
         buton_list.add(buton2)
