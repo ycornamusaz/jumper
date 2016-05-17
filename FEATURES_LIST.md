@@ -6,10 +6,11 @@
 - [x] Add multi-players support --> option menu
 - [x] Add a "game over" screen
 - [x] Add player's life
-- [ ] Add multi-resolution support
+- [x] Add multi-resolution support
+- [x] Can modify easily jump height
+- [ ] Declare block positions from the bottom
 - [ ] Bitmap colision (menu)
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
 - [ ] Create an option menu
-- [ ] Can modify easily jump height
