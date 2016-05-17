@@ -103,27 +103,34 @@ class Player(pygame.sprite.Sprite):
             self.c = self.c_base
             self.on_ground = True
 
+########## GRAVITY FUNCTION ##########
+
     def gravity(self, block_list, movable_list, all_game_sprites_list, power):
         #pdb.set_trace()
         self.rect.y += 1
-        ## Detect rect colisions between player and ground block
+        ## Detect rect colisions between player and ground blocks
         block_player_list = pygame.sprite.spritecollide(self, block_list, True)
         if block_player_list != [] :
             for block in block_player_list :
+                ## Detect bitmap colisions between player and ground block
                 if pygame.sprite.collide_mask(self, block) != None :
+                    ## Set player state to "on ground"
                     self.reset("on_ground")
             
+            ## Re-add block to default groups
             movable_list.add(block)
             block_list.add(block)
             all_game_sprites_list.add(block)
 
         else :
+            ## Set plaxer state to "not on ground"
             self.on_ground = False
 
         self.rect.y -= 1
-
+        
+        ## If the player isn't on ground
         if self.on_ground == False :
-            ## Gravity
+            ## Apply gravity
             self.rect.y += power
 
 
@@ -194,9 +201,6 @@ class Player(pygame.sprite.Sprite):
                 block_list.add(block)
                 all_game_sprites_list.add(block)
 
-        ## If the player isn't on the block or down the block
-        #else : ##(self.rect.x + self.width) <= (self.last_block_colide.rect.x) or (self.rect.x) >= (self.last_block_colide.rect.x + self.last_block_colide.width) or (self.rect.y) >= (self.last_block_colide.rect.y + self.last_block_colide.height) : 
-        #    self.gravity(3)
 
 ########## ANIMATION AND POSITION UPDATE PROCESS ##########
 
@@ -235,10 +239,13 @@ class Player(pygame.sprite.Sprite):
 ########## DISPLAY PLAYER'S LIFE ##########
 
     def creat_life(self) :
+        ## Create a new sprite group
         self.life_sprite = pygame.sprite.Group()
-
+        
+        ## Define heart's table sprite 
         self.heart = {}
 
+        ## Add number of heart 
         for i in range(self.life) :
             i += 1
             self.heart[i] = Heart()
@@ -248,10 +255,12 @@ class Player(pygame.sprite.Sprite):
             self.life_sprite.add(self.heart[i])
 
     def display_life(self, screen) :
+        ## Display hearts
         self.creat_life()
         self.life_sprite.draw(screen)
 
     def lose_life(self) :
+        ## Remove a life ad calculate if the player is death
         self.life -= 1
         self.life_sprite.empty()
         if self.life < 0 :

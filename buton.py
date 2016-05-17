@@ -14,9 +14,11 @@ class Buton(pygame.sprite.Sprite):
         ## Import picture
         self.image_1 = pygame.image.load("PNG/Environment/ground_grass.png").convert()
         
+        ## Resize imgage to fit with the screen resolution
         self.image_1 = pygame.transform.scale(self.image_1, [int(self.image_1.get_width()*self.conf.factor), int(self.image_1.get_height()*self.conf.factor)])
         self.image = pygame.Surface([self.image_1.get_width(),self.image_1.get_height()])
 
+        ## Set mask
         self.mask = pygame.mask.from_surface(self.image)
 
         ## Set the background to transparent

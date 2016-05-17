@@ -65,6 +65,7 @@ class Ground(pygame.sprite.Sprite):
             print("    small_broken_snow\r\n    sand\r\n    small_sand\r\n    broken_sand\r\n    small_broken_sand\r\n    wood\r\n    small_wood\r\n    broken_wood")
             print("    small_broken_wood")
 
+        ## Resize image to fit with the screen resolution
         self.image = pygame.transform.scale(self.image, [int(self.image.get_width()*conf.factor), int(self.image.get_height()*conf.factor)])
 
         ## Set the background to transparent
