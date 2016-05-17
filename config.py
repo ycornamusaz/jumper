@@ -30,18 +30,12 @@ class Config() :
         ## FULLSCREEN
         if self.config_data["Config"]["Screen"]["state"] == 'FULLSCREEN' :
             
-            return pygame.FULLSCREEN
+            return pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
         
-        ## Opengl render
-        elif self.config_data["Config"]["Screen"]["state"] == 'OPENGL' :
-            
-            return pygame.OPENGL
-        
-        ## Hardware acceleration
-        elif self.config_data["Config"]["Screen"]["state"] == 'HWSURFACE' :
+        elif self.config_data["Config"]["Screen"]["state"] == 'None' :
 
-            return pygame.HWSURFACE
-        
+            return pygame.HWSURFACE | pygame.DOUBLEBUF
+
         ## If the entry is not reconise
         else :
             
