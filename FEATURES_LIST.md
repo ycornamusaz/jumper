@@ -8,7 +8,7 @@
 - [x] Add player's life
 - [x] Add multi-resolution support
 - [x] Can modify easily jump height
-- [ ] Declare block positions from the bottom
+- [x] Declare block positions from the bottom
 - [ ] Bitmap colision (menu)
 - [ ] Add player's enemys
 - [ ] Add custom level editor
