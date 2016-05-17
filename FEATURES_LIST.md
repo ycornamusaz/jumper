@@ -9,7 +9,7 @@
 - [x] Add multi-resolution support
 - [x] Can modify easily jump height
 - [x] Declare block positions from the bottom
-- [ ] Bitmap colision (menu)
+- [x] Bitmap colision (menu)
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
