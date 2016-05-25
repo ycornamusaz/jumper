@@ -10,7 +10,8 @@
 - [x] Can modify easily jump height
 - [x] Declare block positions from the bottom
 - [x] Bitmap colision (menu)
+- [x] Create an option menu
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
-- [ ] Create an option menu
+- [ ] Create a player menu
