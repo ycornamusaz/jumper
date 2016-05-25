@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.c = self.c_base
 
         ## Set player speed base
-        self.speed_base = 8
+        self.speed_base = 8*self.conf.factor
         self.speed = 0
 
         ## Set player's life
@@ -140,7 +140,7 @@ class Player(pygame.sprite.Sprite):
         ## Player jump process
         if self.in_jump == True :
             if (self.c < -(self.c_base)) :
-                self.rect.y = (self.last_y - (-(self.c/10)**2+self.jump_height))
+                self.rect.y = (self.last_y - (-(self.c/10)**2+self.jump_height)*self.conf.factor)
                 self.c += self.jump_power
                 self.on_ground = False
             else :
@@ -162,7 +162,7 @@ class Player(pygame.sprite.Sprite):
                 ## If a bitmap colision is detected
                 if pygame.sprite.collide_mask(self, block) != None :
                     ## If the player is enter into the block by the top
-                    if (self.rect.y + self.height) < (block.rect.y + 3 + (-(self.c/10)**2+self.jump_height)) :
+                    if (self.rect.y + self.height) < (block.rect.y + 10 + (-(self.c/10)**2+self.jump_height)) :
                         ## Set ground value to true
                         self.reset("on_ground")
                         ## Set player pos to the top of the block

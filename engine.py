@@ -162,3 +162,94 @@ class Engine() :
                 if buton.color != Color.WHITE :
                     buton.update(buton.text, Color.WHITE)
 
+
+    def get_pressed_buton(self, buton_list, pointer, groups) :
+        
+        buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
+        for buton in buton_pointer_list :
+            if pygame.sprite.collide_mask(pointer, buton) != None :
+                buton_text = buton.text
+                for group in groups :
+                    group.add(buton)
+                return buton
+            else :
+                for group in groups :
+                    group.add(buton)
+
+
+    def set_ext_buton(self, buton, ext) :
+        try :
+            buton.ext = ext
+            buton.text = buton.base_text + " " + buton.ext
+            buton.update(buton.text, buton.color)
+        
+        except :
+            buton.base_text = buton.text
+            buton.ext = ext
+            buton.text = buton.base_text + " " + buton.ext
+            buton.update(buton.text, buton.color)
+
+    def switch_resolution_buton(self, buton) :
+        
+        for i in range(len(self.config_data["Config"]["Screen"]["resolutions"])) :
+
+            if buton.text.find(str(self.config_data["Config"]["Screen"]["resolutions"][i]["x"]) + "x" + str(self.config_data["Config"]["Screen"]["resolutions"][i]["y"])) != -1 :
+                
+                i += 1
+                if i >= len(self.config_data["Config"]["Screen"]["resolutions"]) :
+                    i = 0
+
+                self.config_data["Config"]["Screen"]["width"] = self.config_data["Config"]["Screen"]["resolutions"][i]["x"]
+                self.config_data["Config"]["Screen"]["height"] = self.config_data["Config"]["Screen"]["resolutions"][i]["y"]
+                self.set_ext_buton(buton, (str(self.config_data["Config"]["Screen"]["width"]) + "x" + str(self.config_data["Config"]["Screen"]["height"])))
+                break
+        
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+    def switch_screen_format_buton(self, buton) :
+
+        if self.config_data["Config"]["Screen"]["state"] == "FULLSCREEN" :
+            self.set_ext_buton(buton, "WINDOWED")
+            self.config_data["Config"]["Screen"]["state"] = "WINDOWED"
+        elif self.config_data["Config"]["Screen"]["state"] == "WINDOWED" :
+            self.set_ext_buton(buton, "FULLSCREEN")
+            self.config_data["Config"]["Screen"]["state"] = "FULLSCREEN"
+
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+    def get_tick_speed(self) :
+        if self.config_data["Config"]["dificulty"] == 0 :
+            return 90
+        elif self.config_data["Config"]["dificulty"] == 1 :
+            return 120
+        elif self.config_data["Config"]["dificulty"] == 2 :
+            return 500
+
+    def switch_dificulty_buton(self, buton) :
+
+        if buton.text.find("Easy") != -1 :
+            self.set_ext_buton(buton, "Medium")
+            self.config_data["Config"]["dificulty"] = 1
+        
+        elif buton.text.find("Medium") != -1 :
+            self.set_ext_buton(buton, "Hard")
+            self.config_data["Config"]["dificulty"] = 2
+
+        elif buton.text.find("Hard") != -1 :
+            self.set_ext_buton(buton, "Easy")
+            self.config_data["Config"]["dificulty"] = 0
+
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+    def get_dificulty(self) :
+
+        if self.config_data["Config"]["dificulty"] == 0 :
+            return "Easy"
+        if self.config_data["Config"]["dificulty"] == 1 :
+            return "Medium"
+        if self.config_data["Config"]["dificulty"] == 2 :
+            return "Hard"
+
