@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.c = self.c_base
 
         ## Set player speed base
-        self.speed_base = 8*self.conf.factor
+        self.speed_base = 8*self.conf.xfactor
         self.speed = 0
 
         ## Set player's life

@@ -14,7 +14,7 @@ Config:
     - sex: femal
     number: 1
   Screen:
-    height: 1080
+    height: 900
     resolutions:
     - x: 3840
       y: 1080
@@ -36,6 +36,6 @@ Config:
       y: 900
     - x: 1024
       y: 768
-    state: FULLSCREEN
-    width: 1920
-  dificulty: 0
+    state: WINDOWED
+    width: 1600
+  dificulty: 1

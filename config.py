@@ -21,6 +21,7 @@ class Config() :
             self.factor = self.width/self.width_base
         else :
             self.factor = self.height/self.height_base
+        self.xfactor = self.width/self.width_base
 
     ## Return config file var
     def get_config_data(self) :
