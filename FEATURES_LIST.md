@@ -11,7 +11,7 @@
 - [x] Declare block positions from the bottom
 - [x] Bitmap colision (menu)
 - [x] Create an option menu
+- [x] Create a player menu
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
-- [ ] Create a player menu
