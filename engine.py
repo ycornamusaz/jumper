@@ -164,64 +164,102 @@ class Engine() :
                 if buton.color != Color.WHITE :
                     buton.update(buton.text, Color.WHITE)
 
+########## GET BUTON ##########
 
     def get_pressed_buton(self, buton_list, pointer, groups) :
         
+        ## Detect rect colision between pointer and buton group
         buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
+        ## For each butons
         for buton in buton_pointer_list :
+            ## Check if the pointer mask and the buton mask are collide
             if pygame.sprite.collide_mask(pointer, buton) != None :
-                buton_text = buton.text
+                ## Re-add the buton in the groups
                 for group in groups :
                     group.add(buton)
+                ## Return the buton
                 return buton
             else :
+                ## Re-add the buton in the groups
                 for group in groups :
                     group.add(buton)
 
+########## SET THE EXTENSION BUTON TEXT ##########
 
     def set_ext_buton(self, buton, ext) :
+        ## Test if the buton already have the base_text attribut
         try :
+            ## Define an extension
             buton.ext = ext
+            ## Add the text extension to the buton text
             buton.text = buton.base_text + " " + buton.ext
+            ## Update the buton text
             buton.update(buton.text, buton.color)
         
+        ## If not create it
         except :
+            ## Create the base_text attribut
             buton.base_text = buton.text
+            ## Define an extension
             buton.ext = ext
+            ## Add the text extension to the buton text
             buton.text = buton.base_text + " " + buton.ext
+            ## Update the buton text
             buton.update(buton.text, buton.color)
+
+########## SWITCH THE RESOLUTION ##########
 
     def switch_resolution_buton(self, buton) :
         
+        ## For each resolution's posibility
         for i in range(len(self.config_data["Config"]["Screen"]["resolutions"])) :
 
+            ## Find the selected resolution
             if buton.text.find(str(self.config_data["Config"]["Screen"]["resolutions"][i]["x"]) + "x" + str(self.config_data["Config"]["Screen"]["resolutions"][i]["y"])) != -1 :
                 
+                ## Select the next resolution
                 i += 1
+                ## If i is equal or superior to the number of resolutions, restart from 0
                 if i >= len(self.config_data["Config"]["Screen"]["resolutions"]) :
                     i = 0
 
+                ## Define the new resolution
                 self.config_data["Config"]["Screen"]["width"] = self.config_data["Config"]["Screen"]["resolutions"][i]["x"]
                 self.config_data["Config"]["Screen"]["height"] = self.config_data["Config"]["Screen"]["resolutions"][i]["y"]
+                ## And the buton text
                 self.set_ext_buton(buton, (str(self.config_data["Config"]["Screen"]["width"]) + "x" + str(self.config_data["Config"]["Screen"]["height"])))
+                ## Quit the loop
                 break
         
+        ## Write the changes to the config file
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+########## SWITCH THE SCREEN FORMAT ##########
 
     def switch_screen_format_buton(self, buton) :
 
+        ## Check the actual screen format
         if self.config_data["Config"]["Screen"]["state"] == "FULLSCREEN" :
+            ## Set the new buton text
             self.set_ext_buton(buton, "WINDOWED")
+            ## Define the new screen format
             self.config_data["Config"]["Screen"]["state"] = "WINDOWED"
-        elif self.config_data["Config"]["Screen"]["state"] == "WINDOWED" :
-            self.set_ext_buton(buton, "FULLSCREEN")
-            self.config_data["Config"]["Screen"]["state"] = "FULLSCREEN"
 
+        elif self.config_data["Config"]["Screen"]["state"] == "WINDOWED" :
+            ## Set the new buton text
+            self.set_ext_buton(buton, "FULLSCREEN")
+            ## Define the new screen format
+            self.config_data["Config"]["Screen"]["state"] = "FULLSCREEN"
+        
+        ## Write the changes to the config file
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
 
+########## GET THE TICK SPEED OF THE GAME ##########
+
     def get_tick_speed(self) :
+        ## Check the dificulty level and return the tick speed
         if self.config_data["Config"]["dificulty"] == 0 :
             return 90
         elif self.config_data["Config"]["dificulty"] == 1 :
@@ -229,68 +267,106 @@ class Engine() :
         elif self.config_data["Config"]["dificulty"] == 2 :
             return 500
 
+########## SWITCH THE DIFICULTY LEVEL ##########
+
     def switch_dificulty_buton(self, buton) :
 
+        ## Check the buton status
         if buton.text.find("Easy") != -1 :
+            ## Set the new buton text
             self.set_ext_buton(buton, "Medium")
+            ## Define the buton dificulty
             self.config_data["Config"]["dificulty"] = 1
         
         elif buton.text.find("Medium") != -1 :
+            ## Set the new buton text
             self.set_ext_buton(buton, "Hard")
+            ## Define the buton dificulty
             self.config_data["Config"]["dificulty"] = 2
 
         elif buton.text.find("Hard") != -1 :
+            ## Set the new buton text
             self.set_ext_buton(buton, "Easy")
+            ## Define the buton dificulty
             self.config_data["Config"]["dificulty"] = 0
 
+        ## Write the changes to the config file 
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+########## GET THE DIFICULTY LEVEL ##########
 
     def get_dificulty(self) :
 
+        ## Check the dificulty into the config file and return text
         if self.config_data["Config"]["dificulty"] == 0 :
             return "Easy"
-        if self.config_data["Config"]["dificulty"] == 1 :
+        elif self.config_data["Config"]["dificulty"] == 1 :
             return "Medium"
-        if self.config_data["Config"]["dificulty"] == 2 :
+        elif self.config_data["Config"]["dificulty"] == 2 :
             return "Hard"
+
+########## SELECT THE PLAYER NUMBERS ##########
 
     def switch_player_number_buton(self, buton) :
 
+        ## Check the actual player's number
         if buton.text.find("1") != -1 :
+            ## Set the new buton text
             self.set_ext_buton(buton, "2")
+            ## Sefine the new number of player
             self.config_data["Config"]["Players"]["number"] = 2
         
         elif buton.text.find("2") != -1 :
+            ## Set the new buton text
             self.set_ext_buton(buton, "1")
+            ## Sefine the new number of player
             self.config_data["Config"]["Players"]["number"] = 1
 
+        ## Write the changes to the config files
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
 
+########## SWITCH THE PLAYER SEX ##########
 
     def switch_player_sex_buton(self, buton) :
 
+        ## Check the actual sex of the player
         if buton.text.find("male") != -1 :
+            ## Define the new value
             self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] = "femal"
+            ## Update the buton text
             self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
         
         elif buton.text.find("femal") != -1 :
+            ## Define the new value
             self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] = "male"
+            ## Update the buton text
             self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
 
+        ## Write the changes to the config file
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
 
-    def return_pressed_key(self, buton) :
-        wait = True
-        trace = re.compile('.*?(\\{.*?\\})')
+########## SET PLAYER'S CONTROL KEYS ##########
 
+    def return_pressed_key(self, buton) :
+        ## This is used to wait for a key
+        wait = True
+        ## Define the regex
+        trace = re.compile('.*?(\\{.*?\\})')
+        
+        ## While a key isn't pressed
         while wait :
+            ## Detect events
             for event in pygame.event.get() :
+                ## Detect the event type
                 if event.type == pygame.KEYDOWN :
+                    ## Recover the event text and cut it
                     string = trace.search(repr(event)).group(1)
+                    ## Recover the pressed key
                     key = ast.literal_eval(string)['unicode']
+                    ## Detect and assign key
                     if key == '' :
                         if ast.literal_eval(string)['scancode'] == 113 :
                             out = "K_LEFT"
@@ -325,39 +401,57 @@ class Engine() :
                     wait = False
         
         wait = True
-        
+
+        ## Detect the pressed buton
         if buton.text.find("jump key") != -1 :
+            ## Define the new key
             self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"] = out
+            ## Set the buton text
             self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " jump key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"])))
         elif buton.text.find("action key") != -1 :
+            ## Define the new key
             self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"] = out
+            ## Set the buton text
             self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " action key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"])))
         elif buton.text.find("left key") != -1 :
+            ## Define the new key
             self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"] = out
+            ## Set the buton text
             self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " left key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"])))
         
         elif buton.text.find("right key") != -1:
+            ## Define the new key
             self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"] = out
+            ## Set the buton text
             self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " right key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"])))
 
+        ## Write the changes to the config file
         with open('config.yaml', 'w') as outfile:
             outfile.write(yaml.dump(self.config_data, default_flow_style=False))
 
+########## UPDATE PLAYER MENU ##########
+
     def update_player_menu(self, buton_list) :
         for buton in buton_list :
+            ## Detect the butons who have to be update
             if buton.text.find("Player") != -1 and buton.text.find("sex") != -1 :
+                ## Set the buton text
                 self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
 
             elif buton.text.find("action key") != -1 :
+                ## Set the buton text
                 self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " action key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"])))
 
             elif buton.text.find("jump key") != -1 :
+                ## Set the buton text
                 self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " jump key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"])))
 
             elif buton.text.find("left key") != -1 :
+                ## Set the buton text
                 self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " left key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"])))
 
             elif buton.text.find("right key") != -1 :
+                ## Set the buton text
                 self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " right key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"])))
 
             else : 

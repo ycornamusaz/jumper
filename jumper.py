@@ -79,38 +79,52 @@ class Game :
                     done_menu = True
                 ## If any mouse buton is pressed 
                 if event.type == pygame.MOUSEBUTTONDOWN :
-                    ## If pointer is on buton1, start game
+                    ## Detect if left mouse buton is pressed
                     if event.button == 1 :
-
+                        
+                        ## Detect and retourn the pressed buton
                         buton = engine.get_pressed_buton(buton_list, pointer, [all_menu_sprites_list, buton_list])
-
+                        
+                        ## If there's no buton pressed, do nothing
                         if buton == None :
                             do = "nothing"
                         
+                        ## If play buton is pressed, launch the game
                         elif buton.text is "Play" :
                             start_game = True
 
+                        ## If options buton is pressed, launch options menu
                         elif buton.text is "Options" :
                             start_options = True
 
+                        ## If quit buton is pressed, quit the game
                         elif buton.text is "Quit" :
                             done_menu = True
                             
             ########## LOGIC CODE ZONE ##########
             
+            ## Check for restarting the game
             while start_game == True :
+                ## Launch game
                 Game.game()
+                ## One the player has gameover, launch gameover's screen
                 start_game = Game.game_over()
+            ## If the gameover menu return nothing, git the game
             if start_game == None :
                 break
+            ## If gameover menu return false, display main menu
 
+            ## Check if option menu have to be launch
             if start_options == True :
+                ## Launch option's menu
                 restart = Game.options()
 
+                ## Check if we have to restart the game
                 if restart is True :
                     done_menu = True
                     return True
-                    
+                
+                ## Reset options menu start value
                 start_options = False
 
             ## Update mouse pos
@@ -225,7 +239,8 @@ class Game :
                     engine.reset_level(player[i], movable_list)
                     player[i].reset("after_jump")
                     done_game = player[i].lose_life()
-
+                
+                ## Move the map
                 engine.move_map(player[i], movable_list)
 
                 ## Jump process
@@ -233,7 +248,8 @@ class Game :
     
                 ## Detect and manage colisions between player and ground's blocks
                 player[i].colide_block(ground_list, movable_list, all_game_sprites_list)
-
+                
+                ## Apply gravity to player
                 player[i].gravity(ground_list, movable_list, all_game_sprites_list, 3)
 
                 ## Update player animation and position
@@ -330,19 +346,24 @@ class Game :
                     ## If pointer is on buton1, start game
                     if event.button == 1 :
                         
+                        ## Recover the pressed buton
                         buton = engine.get_pressed_buton(buton_list, pointer, [all_game_over_sprites_list, buton_list])
 
+                        ## If no buton was pressed, do nothing
                         if buton == None :
                             do = "nothing"
 
+                        ## Launch the game
                         elif buton.text is "Restart" :
                             return True
                             done_game_over = True
 
+                        ## Quit the gameover screen
                         elif buton.text is "Menu" :
                             return False
                             done_game_over = True
 
+                        ## Quit the game
                         elif buton.text is "Quit" :
                             done_game_over = True
                             return None
@@ -471,33 +492,40 @@ class Game :
                     ## If pointer is on buton1, start game
                     if event.button == 1 :
                         
+                        ## Detect and recover the pressed buton
                         buton = engine.get_pressed_buton(buton_list, pointer, [all_options_sprites_list, buton_list])
                         
+                        ## Nothig was pressed ? so do nothing
                         if buton == None :
                             
                             do = "nothing"
 
+                        ## Change the screen resolution
                         elif buton.text.find("Screen Resolution") != -1 :
                         
                             engine.switch_resolution_buton(buton)
 
+                        ## Change the screen format
                         elif buton.text.find("Screen Format") != -1 :
                         
                             engine.switch_screen_format_buton(buton)
 
+                        ## Launch the player's options menu
                         elif buton.text is "Player" :
                         
-                            print("Launch player's menu")
                             Game.player()
 
+                        ## Change the dificulty
                         elif buton.text.find("Dificulty") != -1 :
 
                             engine.switch_dificulty_buton(buton)
                         
+                        ## Return to main menu
                         elif buton.text is "Back" :
                         
                             done_options = True
 
+                        ## Restart the game
                         elif buton.text is "Restart Game" :
                         
                             done_options = True
@@ -638,48 +666,50 @@ class Game :
                     ## If pointer is on buton1, start game
                     if event.button == 1 :
                         
+                        ## Recover the pressed buton
                         buton = engine.get_pressed_buton(buton_list, pointer, [all_player_sprites_list, buton_list])
                         
+                        ## Nothing was pressed ? so do nothing
                         if buton == None :
                             
                             do = "nothing"
 
+                        ## Change the nomber of player
                         elif buton.text.find("Player number") != -1 :
                         
                             engine.switch_player_number_buton(buton)
                             engine.update_player_menu(buton_list)
 
+                        ## Change the sex of the player
                         elif buton.text.find("Player") != -1 and buton.text.find("sex") != -1 :
                         
                             engine.switch_player_sex_buton(buton)
 
+                        ## Set the action key
                         elif buton.text.find("action key") != -1 :
                         
                             engine.return_pressed_key(buton)
 
+                        ## Set the jump key
                         elif buton.text.find("jump key") != -1 :
 
                             engine.return_pressed_key(buton)
                         
+                        ## Set the left key
                         elif buton.text.find("left key") != -1 :
 
                             engine.return_pressed_key(buton)
                         
+                        ## Set the right key
                         elif buton.text.find("right key") != -1 :
 
                             engine.return_pressed_key(buton)
                         
+                        ## Go back to the option's menu
                         elif buton.text is "Back" :
                         
                             done_options = True
-
-                        elif buton.text is "Restart Game" :
                         
-                            done_options = True
-                        
-                            return True
-
-        
             ########## LOGIC CODE ZONE ##########
             
             ## Update mouse pos
@@ -709,5 +739,6 @@ class Game :
             ## Set game ticks (per second)
             clock.tick(60)
 
+## If the menu return true, restart the game
 while Game.menu() is True :
     do = "nothing"
