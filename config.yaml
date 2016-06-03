@@ -3,10 +3,12 @@ Config:
     file: map.yaml
   Players:
     Keys:
-    - left: K_LEFT
+    - action: K_SPACE
+      left: K_LEFT
       right: K_RIGHT
       up: K_UP
-    - left: K_a
+    - action: K_LSHIFT
+      left: K_a
       right: K_d
       up: K_w
     Sex:

@@ -1,4 +1,6 @@
 import pygame
+import re
+import ast
 from ground import *
 from config import *
 from pygame import *
@@ -253,3 +255,110 @@ class Engine() :
         if self.config_data["Config"]["dificulty"] == 2 :
             return "Hard"
 
+    def switch_player_number_buton(self, buton) :
+
+        if buton.text.find("1") != -1 :
+            self.set_ext_buton(buton, "2")
+            self.config_data["Config"]["Players"]["number"] = 2
+        
+        elif buton.text.find("2") != -1 :
+            self.set_ext_buton(buton, "1")
+            self.config_data["Config"]["Players"]["number"] = 1
+
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+
+    def switch_player_sex_buton(self, buton) :
+
+        if buton.text.find("male") != -1 :
+            self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] = "femal"
+            self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
+        
+        elif buton.text.find("femal") != -1 :
+            self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] = "male"
+            self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
+
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+    def return_pressed_key(self, buton) :
+        wait = True
+        trace = re.compile('.*?(\\{.*?\\})')
+
+        while wait :
+            for event in pygame.event.get() :
+                if event.type == pygame.KEYDOWN :
+                    string = trace.search(repr(event)).group(1)
+                    key = ast.literal_eval(string)['unicode']
+                    if key == '' :
+                        if ast.literal_eval(string)['scancode'] == 113 :
+                            out = "K_LEFT"
+                        elif ast.literal_eval(string)['scancode'] == 114 :
+                            out = "K_RIGHT"
+                        elif ast.literal_eval(string)['scancode'] == 111 :
+                            out = "K_UP"
+                        elif ast.literal_eval(string)['scancode'] == 116 :
+                            out = "K_DOWN"
+                        elif ast.literal_eval(string)['scancode'] == 50 :
+                            out = "K_LSHIFT"
+                        elif ast.literal_eval(string)['scancode'] == 62 :
+                            out = "K_RSHIFT"
+                        elif ast.literal_eval(string)['scancode'] == 37 :
+                            out = "K_LCTRL"
+                        elif ast.literal_eval(string)['scancode'] == 105 :
+                            out = "K_RCTRL"
+                        elif ast.literal_eval(string)['scancode'] == 301 :
+                            out = "K_CAPSLOCK"
+                        else : 
+                            out = None
+
+                    elif key == '\t' :
+                        out = "K_TAB"
+                    elif key == ' ' :
+                        out = "K_SPACE"
+                    elif key == ',' :
+                        out = "K_COMMA"
+                    else :
+                        out = "K_" + key
+
+                    wait = False
+        
+        wait = True
+        
+        if buton.text.find("jump key") != -1 :
+            self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"] = out
+            self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " jump key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"])))
+        elif buton.text.find("action key") != -1 :
+            self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"] = out
+            self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " action key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"])))
+        elif buton.text.find("left key") != -1 :
+            self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"] = out
+            self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " left key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"])))
+        
+        elif buton.text.find("right key") != -1:
+            self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"] = out
+            self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " right key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"])))
+
+        with open('config.yaml', 'w') as outfile:
+            outfile.write(yaml.dump(self.config_data, default_flow_style=False))
+
+    def update_player_menu(self, buton_list) :
+        for buton in buton_list :
+            if buton.text.find("Player") != -1 and buton.text.find("sex") != -1 :
+                self.set_ext_buton(buton, ( " " + str(self.config_data["Config"]["Players"]["number"]) + "'s sex " + self.config_data["Config"]["Players"]["Sex"][(self.config_data["Config"]["Players"]["number"] - 1)]["sex"] ))
+
+            elif buton.text.find("action key") != -1 :
+                self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " action key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["action"])))
+
+            elif buton.text.find("jump key") != -1 :
+                self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " jump key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["up"])))
+
+            elif buton.text.find("left key") != -1 :
+                self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " left key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["left"])))
+
+            elif buton.text.find("right key") != -1 :
+                self.set_ext_buton(buton, (str(self.config_data["Config"]["Players"]["number"]) + " right key " + str(self.config_data["Config"]["Players"]["Keys"][(self.config_data["Config"]["Players"]["number"] - 1)]["right"])))
+
+            else : 
+                do = "nothing"

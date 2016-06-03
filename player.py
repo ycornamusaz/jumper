@@ -2,7 +2,6 @@ from heart import *
 from color import *
 from config import *
 import pygame
-import pdb
 import math
 
 class Player(pygame.sprite.Sprite):

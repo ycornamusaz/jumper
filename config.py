@@ -34,7 +34,7 @@ class Config() :
 
 ########## GET SCREEN METHODE ##########
 
-    def get_screen(self) :
+    def get_screen_mode(self) :
 
         ## FULLSCREEN
         if self.config_data["Config"]["Screen"]["state"] == 'FULLSCREEN' :
