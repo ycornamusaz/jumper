@@ -177,6 +177,7 @@ class Game :
         ## Create game sprite groups
         player_list = pygame.sprite.Group()
         ground_list = pygame.sprite.Group()
+        enemie_list = pygame.sprite.Group()
         movable_list = pygame.sprite.Group()
         all_game_sprites_list = pygame.sprite.Group()
 
@@ -185,6 +186,7 @@ class Game :
 
         ## Generate map
         engine.gen_blocks(player_list, [ground_list, movable_list, all_game_sprites_list])
+        engine.gen_enemies([enemie_list, movable_list, all_game_sprites_list])
 
         ## Start game loop
         while not done_game :
@@ -233,6 +235,10 @@ class Game :
                     
             ########## LOGIC CODE ZONE ##########
             
+            for enemie in enemie_list :
+                enemie.update()
+                enemie.gravity(ground_list, movable_list, all_game_sprites_list, 3)
+            
             for i in player :
                 ## Quit game if player is out of screen
                 if player[i].rect.y > conf.height :
@@ -240,6 +246,10 @@ class Game :
                     player[i].reset("after_jump")
                     done_game = player[i].lose_life()
                 
+                value = player[i].colide_enemie(enemie_list, [movable_list, all_game_sprites_list])
+                if value == True :
+                    engine.reset_enemie(enemie_list)
+
                 ## Move the map
                 engine.move_map(player[i], movable_list)
 
@@ -253,7 +263,7 @@ class Game :
                 player[i].gravity(ground_list, movable_list, all_game_sprites_list, 3)
 
                 ## Update player animation and position
-                player[i].update()
+                player[i].update(all_game_sprites_list)
         
             ########## CLEAR SCREEN ZONE ##########
         

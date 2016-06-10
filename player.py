@@ -12,8 +12,6 @@ class Player(pygame.sprite.Sprite):
         ## Call the parent class (Sprite) constructor
         super().__init__()
 
-        skin_list = []
-
         self.conf = Config()
 
         ## Skin choice
@@ -81,6 +79,12 @@ class Player(pygame.sprite.Sprite):
 
         ## Set player's life
         self.life = 3
+
+        ## Set the player immune
+        self.imunne = False
+        self.imunne_time = 0
+        self.imunne_time_base = 200
+        self.count = 0
 
         ## Set time to incremant animation
         self.animation_time = 0
@@ -203,7 +207,7 @@ class Player(pygame.sprite.Sprite):
 
 ########## ANIMATION AND POSITION UPDATE PROCESS ##########
 
-    def update(self) :
+    def update(self, all_game_sprites) :
 
         ## Player animation
         if self.speed > 0 :
@@ -232,6 +236,21 @@ class Player(pygame.sprite.Sprite):
             else :
                 self.animation_time = 0
 
+        if self.imunne == True :
+            if self.imunne_time < 5 :
+                all_game_sprites.add(self)
+            elif self.imunne_time < 10 :
+                all_game_sprites.remove(self)
+            elif self.imunne_time < 15 :
+                all_game_sprites.add(self)
+            else :
+                self.imunne_time = 0
+                self.count += 1
+                if self.count*15 >= self.imunne_time_base :
+                    self.imunne = False
+                    self.count = 0
+            self.imunne_time += 1
+
         ## Update player position
         self.rect.x += self.speed
 
@@ -259,11 +278,57 @@ class Player(pygame.sprite.Sprite):
         self.life_sprite.draw(screen)
 
     def lose_life(self) :
-        ## Remove a life ad calculate if the player is death
-        self.life -= 1
-        self.life_sprite.empty()
+        if self.imunne != True :
+            ## Remove a life ad calculate if the player is death
+            self.life -= 1
+            self.life_sprite.empty()
+            self.imunne = True
+        
         if self.life < 0 :
             return True
         else :
             return False
 
+
+    def colide_enemie(self, enemie_list, groups) :
+
+        value = True
+        ## Detect rect colisions between player and ground block
+        enemie_player_list = pygame.sprite.spritecollide(self, enemie_list, True)
+        ## If a rect colision is detected
+        if enemie_player_list != [] :
+            ## For each enemies in colision
+            for enemie in enemie_player_list :
+                ## If a bitmap colision is detected
+                if pygame.sprite.collide_mask(self, enemie) != None :
+
+                    ## If the player is enter into the block by the right side
+                    if (self.rect.x + self.width) > (enemie.rect.x) and (self.rect.x + self.width) < (enemie.rect.x + enemie.width/2) :
+                        ## Move the player out of the block
+                        self.rect.x -= (5 + self.speed)
+                    
+                    ## If the player is enter into the block by the left side
+                    elif (self.rect.x) < (enemie.rect.x + enemie.width) and (self.rect.x) > (enemie.rect.x + enemie.width - enemie.width/2) :
+                        ## Move the player out of the block
+                        self.rect.x += (5 - self.speed)
+                    
+                    #if enemie.speed < 0 and self.rect.x + self.width > enemie.start_from and enemie.end_to - enemie.start_from > enemie.width :
+                    #    enemie.start_from = (self.rect.x + self.width)
+
+                    #    value = False
+
+                    #elif enemie.speed > 0 and self.rect.x < enemie.end_to and enemie.end_to - enemie.start_from > enemie.width :
+                    #    enemie.end_to = self.rect.x
+
+                    #    value = False
+
+                    try :
+                        if pygame.sprite.collide_mask(self, enemie.spike) != None :
+                            self.lose_life()
+                    except : 
+                        pass
+
+                enemie_list.add(enemie)
+                for group in groups :
+                    group.add(enemie)
+        return(value)

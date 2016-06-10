@@ -1,0 +1,38 @@
+Config: 
+    Map: 
+        file: map.yaml
+        Players: 
+            Keys: 
+                - left: K_LEFT
+                  right: K_RIGHT 
+                  up: K_UP
+                - left: K_a
+                  right: K_d 
+                  up: K_w 
+            Sex: 
+                sex: male
+                sex: femal
+            number: 1
+    Screen: 
+        height: 1000
+        resolutions: 
+            - x: 2560
+              y: 1600
+            - x: 1920
+              y: 1200
+            - x: 1920 
+              y: 1080
+            - x: 1680
+              y: 1050
+            - x: 1600
+              y: 900
+            - x: 1440 
+              y: 900
+            - x: 1280 
+              y: 1024 
+            - x: 1200 
+              y: 900 
+            - x: 1024 
+              y: 768 
+        state: "WINDOWED"
+        width: 1920

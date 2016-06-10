@@ -4,6 +4,7 @@ import ast
 from ground import *
 from config import *
 from pygame import *
+from enemies import *
 from player import *
 from buton import *
 from heart import *
@@ -95,6 +96,32 @@ class Engine() :
 
                 i += 1
 
+########## CREATE, CONFIGURE ENEMIES ##########
+
+    def gen_enemies(self, groups) :
+        for enemie_type in self.map_data["Levels"][0]["Enemies"] :
+            i = 0
+
+            for x, y, to in self.map_data["Levels"][0]["Enemies"][enemie_type] :
+                x = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["x"]*self.conf.factor
+                y = (1000 - self.map_data["Levels"][0]["Enemies"][enemie_type][i]["y"])*self.conf.factor
+                to = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["to"]*self.conf.factor
+
+                if enemie_type == "spikeman" :
+                    enemie0 = SpikeMan()
+
+                enemie0.rect.x = x
+                enemie0.rect.y = y
+                enemie0.start_from = x
+                enemie0.end_to = to
+                enemie0.start_from_base = x
+                enemie0.end_to_base = to
+
+                for group in groups :
+                    group.add(enemie0)
+
+                i += 1
+
 ########## RESET MAP PROCESS ##########
 
     def reset_level(self, player, liste) :
@@ -104,6 +131,12 @@ class Engine() :
 
             ## Reset the entitie position
             entity.rect.x -= self.shift
+
+            try :
+                entity.start_from -= self.shift
+                entity.end_to -= self.shift
+            except :
+                pass
 
             ## Reset the player position
             player.rect.x = self.map_data["Levels"][0]["Player"]["x"]*self.conf.factor
@@ -115,6 +148,13 @@ class Engine() :
         ## Reset shift
         self.shift = 0
 
+########## RESET ENEMIE DEFAULT POSITION ##########
+
+    def reset_enemie(self, enemie_list) :
+        for enemie in enemie_list :
+            enemie.end_to = enemie.end_to_base + self.shift
+            enemie.start_from = enemie.start_from_base + self.shift
+
 ########## MAP SHIFT ##########
 
     def move_map(self, player, liste) : 
@@ -125,6 +165,11 @@ class Engine() :
             ## Shift all the entities to the left
             for entity in liste :
                 entity.rect.x -= 5
+                try :
+                    entity.start_from -= 5
+                    entity.end_to -= 5
+                except :
+                    pass
             self.shift -= 5
 
         ## If the player is at 1/16 of je screen on the left side
@@ -133,6 +178,11 @@ class Engine() :
             ## Shift all the entities to the right
             for entity in liste :
                 entity.rect.x += 5
+                try :
+                    entity.start_from += 5
+                    entity.end_to += 5
+                except :
+                    pass
             self.shift += 5
 
 ########## BUTON UPDATE ##########

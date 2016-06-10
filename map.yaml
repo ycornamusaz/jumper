@@ -15,6 +15,15 @@ Levels :
         wood :
             - x : 1832
               y : 410
+      Enemies :
+        spikeman :
+            - x : 1232
+              y : 600
+              to : 1632
+                
+            - x : 1832
+              y : 700
+              to : 2000
       Player :
         x : 40
         y : 400
