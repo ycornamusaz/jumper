@@ -293,32 +293,36 @@ class Player(pygame.sprite.Sprite):
     def colide_enemie(self, enemie_list, groups) :
         
         value = False
-        ## Detect rect colisions between player and ground block
-        enemie_player_list = pygame.sprite.spritecollide(self, enemie_list, True)
-        ## If a rect colision is detected
-        if enemie_player_list != [] :
-            ## For each enemies in colision
-            for enemie in enemie_player_list :
-                ## If a bitmap colision is detected
-                if pygame.sprite.collide_mask(self, enemie) != None :
+        if self.imunne != True :
+            ## Detect rect colisions between player and ground block
+            enemie_player_list = pygame.sprite.spritecollide(self, enemie_list, True)
+            ## If a rect colision is detected
+            if enemie_player_list != [] :
+                ## For each enemies in colision
+                for enemie in enemie_player_list :
+                    if enemie.enemie_type != "cloud" :
+                        ## If a bitmap colision is detected
+                        if pygame.sprite.collide_mask(self, enemie) != None :
 
-                    ## If the player is enter into the block by the right side
-                    if (self.rect.x + self.width) > (enemie.rect.x) and (self.rect.x + self.width) < (enemie.rect.x + enemie.width/2) :
-                        ## Move the player out of the block
-                        self.rect.x -= (5 + self.speed)
-                    
-                    ## If the player is enter into the block by the left side
-                    elif (self.rect.x) < (enemie.rect.x + enemie.width) and (self.rect.x) > (enemie.rect.x + enemie.width - enemie.width/2) :
-                        ## Move the player out of the block
-                        self.rect.x += (5 - self.speed)
-                    
-                    if enemie.enemie_type == "spikeman" :
-                        if pygame.sprite.collide_mask(self, enemie.spike) != None :
-                            value = self.lose_life()
-                    elif enemie.enemie_type == "flyman" :
-                        value = self.lose_life()
+                            ## If the player is enter into the block by the right side
+                            if (self.rect.x + self.width) > (enemie.rect.x) and (self.rect.x + self.width) < (enemie.rect.x + enemie.width/2) :
+                                ## Move the player out of the block
+                                self.rect.x -= (5 + self.speed)
+                            
+                            ## If the player is enter into the block by the left side
+                            elif (self.rect.x) < (enemie.rect.x + enemie.width) and (self.rect.x) > (enemie.rect.x + enemie.width - enemie.width/2) :
+                                ## Move the player out of the block
+                                self.rect.x += (5 - self.speed)
+                            
+                            if enemie.enemie_type == "spikeman" :
+                                if pygame.sprite.collide_mask(self, enemie.spike) != None :
+                                    value = self.lose_life()
+                            elif enemie.enemie_type == "flyman" :
+                                value = self.lose_life()
+                            elif enemie.enemie_type == "spikeball" :
+                                value = self.lose_life()
 
-                enemie_list.add(enemie)
-                for group in groups :
-                    group.add(enemie)
+                    enemie_list.add(enemie)
+                    for group in groups :
+                        group.add(enemie)
         return(value)

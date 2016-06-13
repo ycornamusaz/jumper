@@ -280,3 +280,187 @@ class FlyMan(pygame.sprite.Sprite):
 
         self.rect.x += self.speed
         
+class Cloud(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        ## Call the parent class (Sprite) constructor
+        super().__init__()
+
+        self.conf = Config()
+
+        ## Import textures
+        self.cloud = pygame.image.load("PNG/Enemies/cloud.png").convert()
+
+        ## Resize images
+        self.cloud = pygame.transform.scale(self.cloud, [int(self.cloud.get_width()*self.conf.factor), int(self.cloud.get_height()*self.conf.factor)])
+
+        ## Set texture background to transparent
+        self.cloud.set_colorkey(Color.BLACK)
+       
+        ## Set texture
+        self.image = self.cloud
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        ## Get sprite position
+        self.rect = self.image.get_rect()
+
+        ## Get sprite width and height
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        
+        ## Set beeing on ground value
+        self.on_ground = False
+
+        ## Set player speed base
+        self.speed_base = 3*self.conf.xfactor
+        self.speed = -(self.speed_base)
+
+        self.spawntime = 1200
+        self.spawncount = 0
+
+        ## Set the ennemie parkour
+        self.start_from_base = 0
+        self.end_to_base = 0
+        self.start_from = self.start_from_base
+        self.end_to = self.end_to_base
+
+        self.enemie_type = "cloud"
+        
+        ## Set player default position
+        self.rect.y = 1080 - 32 - 94 - self.height
+        self.rect.x = 32
+
+    def spawn(self, groups) :
+
+        if self.spawncount == 0 :
+            spikeball = SpikeBall()
+            spikeball.rect.x = self.rect.x + self.width/4
+            spikeball.rect.y = self.rect.y + self.height/2
+            for group in groups :
+                group.add(spikeball)
+
+        self.spawncount += 1
+
+        if self.spawncount >= self.spawntime :
+            self.spawncount = 0
+
+class SpikeBall(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        ## Call the parent class (Sprite) constructor
+        super().__init__()
+
+        self.conf = Config()
+
+        ## Import textures
+        self.spikeball_1 = pygame.image.load("PNG/Enemies/spikeBall_1.png").convert()
+        self.spikeball_2 = pygame.image.load("PNG/Enemies/spikeBall_2.png").convert()
+
+        ## Resize images
+        self.spikeball_1 = pygame.transform.scale(self.spikeball_1, [int(self.spikeball_1.get_width()*self.conf.factor), int(self.spikeball_1.get_height()*self.conf.factor)])
+        self.spikeball_2 = pygame.transform.scale(self.spikeball_2, [int(self.spikeball_2.get_width()*self.conf.factor), int(self.spikeball_2.get_height()*self.conf.factor)])
+
+        ## Set texture background to transparent
+        self.spikeball_1.set_colorkey(Color.BLACK)
+        self.spikeball_2.set_colorkey(Color.BLACK)
+       
+        ## Set texture
+        self.image = self.spikeball_1
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        ## Get sprite position
+        self.rect = self.image.get_rect()
+
+        ## Get sprite width and height
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        
+        ## Set beeing on ground value
+        self.on_ground = False
+
+        ## Set player speed base
+        self.speed_base = 5*self.conf.xfactor
+        self.speed = 0
+
+        ## Set the ennemie parkour
+        self.start_from_base = 0
+        self.end_to_base = 0
+        self.start_from = self.start_from_base
+        self.end_to = self.end_to_base
+
+        self.enemie_type = "spikeball"
+        
+        ## Set time to incremant animation
+        self.animation_time = 0
+        
+        ## Set player default position
+        self.rect.y = 1080 - 32 - 94 - self.height
+        self.rect.x = 32
+
+########## GRAVITY FUNCTION ##########
+
+    def gravity(self, block_list, movable_list, all_game_sprites_list, power):
+        self.rect.y += 1
+        ## Detect rect colisions between player and ground blocks
+        block_player_list = pygame.sprite.spritecollide(self, block_list, True)
+        if block_player_list != [] :
+            self.speed = -(self.speed_base/2)
+            for block in block_player_list :
+                ## Detect bitmap colisions between player and ground block
+                if pygame.sprite.collide_mask(self, block) != None :
+                    ## Set player state to "on ground"
+                    self.on_ground = True
+            
+            ## Re-add block to default groups
+            movable_list.add(block)
+            block_list.add(block)
+            all_game_sprites_list.add(block)
+
+        else :
+            ## Set plaxer state to "not on ground"
+            self.on_ground = False
+
+        self.rect.y -= 1
+        
+        ## If the player isn't on ground
+        if self.on_ground == False :
+            ## Apply gravity
+            self.rect.y += power
+        else : 
+            self.rect.y = block.rect.y - self.height
+
+
+    def update(self) :
+        
+        ## Player animation
+        if self.speed != 0 :
+            ## Each images alternate every 10 frames
+            if self.animation_time < 10 :
+                self.image = self.spikeball_1 
+                self.animation_time += 1
+            elif self.animation_time < 20 :
+                self.animation_time += 1
+                self.image = self.spikeball_2
+            else :
+                self.animation_time = 0
+
+        elif self.speed == 0 :
+            self.image = self.spikeball_1
+            self.animation_time = 0
+
+        ### Update player position
+        #if (self.rect.x + self.width) >= self.end_to :
+
+        #    self.speed = -(self.speed_base/2)
+        #    self.rect.x = self.end_to - self.width
+
+        #elif self.rect.x <= self.start_from :
+
+        #    self.speed = self.speed_base
+        #    self.rect.x = self.start_from
+
+        self.rect.x += self.speed

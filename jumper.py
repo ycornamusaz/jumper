@@ -237,8 +237,10 @@ class Game :
             
             for enemie in enemie_list :
                 enemie.update()
-                if enemie.enemie_type == "spikeman" :
+                if enemie.enemie_type != "flyman" and enemie.enemie_type != "cloud" :
                     enemie.gravity(ground_list, movable_list, all_game_sprites_list, 3)
+                if enemie.enemie_type == "cloud" :
+                    enemie.spawn([movable_list, enemie_list, all_game_sprites_list])
             
             for i in player :
                 ## Quit game if player is out of screen

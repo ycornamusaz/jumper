@@ -110,8 +110,11 @@ class Engine() :
                 if enemie_type == "flyman" :
                     enemie0 = FlyMan()
 
-                if enemie_type == "spikeman" :
+                elif enemie_type == "spikeman" :
                     enemie0 = SpikeMan()
+
+                elif enemie_type == "cloud" :
+                    enemie0 = Cloud()
 
                 enemie0.rect.x = x
                 enemie0.rect.y = y

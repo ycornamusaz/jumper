@@ -29,6 +29,11 @@ Levels :
             - x : 32
               y : 900
               to : 1000
+
+        cloud :
+            - x : 1900
+              y : 900
+              to : 0
       Player :
         x : 40
         y : 400
