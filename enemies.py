@@ -134,7 +134,7 @@ class SpikeMan(pygame.sprite.Sprite):
         ## Update player position
         if (self.rect.x + self.width) >= self.end_to :
 
-            self.speed = -(self.speed_base)
+            self.speed = -(self.speed_base/2)
             self.rect.x = self.end_to - self.width
 
         elif self.rect.x <= self.start_from :
@@ -270,7 +270,7 @@ class FlyMan(pygame.sprite.Sprite):
         ## Update player position
         if (self.rect.x + self.width) >= self.end_to :
 
-            self.speed = -(self.speed_base)
+            self.speed = -(self.speed_base/2)
             self.rect.x = self.end_to - self.width
 
         elif self.rect.x < self.start_from :
