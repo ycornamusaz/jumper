@@ -12,7 +12,7 @@
 - [x] Bitmap colision (menu)
 - [x] Create an option menu
 - [x] Create a player menu
+- [x] Fix enemies speed bug
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
-- [ ] Fix enemies speed bug
