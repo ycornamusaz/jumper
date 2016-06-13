@@ -15,3 +15,4 @@
 - [ ] Add player's enemys
 - [ ] Add custom level editor
 - [ ] Level selector
+- [ ] Fix enemies speed bug
