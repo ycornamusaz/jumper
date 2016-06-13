@@ -247,8 +247,10 @@ class Game :
                     done_game = player[i].lose_life()
                 
                 value = player[i].colide_enemie(enemie_list, [movable_list, all_game_sprites_list])
-                if value == True :
-                    engine.reset_enemie(enemie_list)
+                if done_game != True :
+                    done_game = value
+                
+                engine.reset_enemie(enemie_list)
 
                 ## Move the map
                 engine.move_map(player[i], movable_list)

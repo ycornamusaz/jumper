@@ -291,8 +291,8 @@ class Player(pygame.sprite.Sprite):
 
 
     def colide_enemie(self, enemie_list, groups) :
-
-        value = True
+        
+        value = False
         ## Detect rect colisions between player and ground block
         enemie_player_list = pygame.sprite.spritecollide(self, enemie_list, True)
         ## If a rect colision is detected
@@ -312,21 +312,8 @@ class Player(pygame.sprite.Sprite):
                         ## Move the player out of the block
                         self.rect.x += (5 - self.speed)
                     
-                    #if enemie.speed < 0 and self.rect.x + self.width > enemie.start_from and enemie.end_to - enemie.start_from > enemie.width :
-                    #    enemie.start_from = (self.rect.x + self.width)
-
-                    #    value = False
-
-                    #elif enemie.speed > 0 and self.rect.x < enemie.end_to and enemie.end_to - enemie.start_from > enemie.width :
-                    #    enemie.end_to = self.rect.x
-
-                    #    value = False
-
-                    try :
-                        if pygame.sprite.collide_mask(self, enemie.spike) != None :
-                            self.lose_life()
-                    except : 
-                        pass
+                    if pygame.sprite.collide_mask(self, enemie.spike) != None :
+                        value = self.lose_life()
 
                 enemie_list.add(enemie)
                 for group in groups :
