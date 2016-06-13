@@ -107,6 +107,9 @@ class Engine() :
                 y = (1000 - self.map_data["Levels"][0]["Enemies"][enemie_type][i]["y"])*self.conf.factor
                 to = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["to"]*self.conf.factor
 
+                if enemie_type == "flyman" :
+                    enemie0 = FlyMan()
+
                 if enemie_type == "spikeman" :
                     enemie0 = SpikeMan()
 

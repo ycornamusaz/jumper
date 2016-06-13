@@ -312,7 +312,10 @@ class Player(pygame.sprite.Sprite):
                         ## Move the player out of the block
                         self.rect.x += (5 - self.speed)
                     
-                    if pygame.sprite.collide_mask(self, enemie.spike) != None :
+                    if enemie.enemie_type == "spikeman" :
+                        if pygame.sprite.collide_mask(self, enemie.spike) != None :
+                            value = self.lose_life()
+                    elif enemie.enemie_type == "flyman" :
                         value = self.lose_life()
 
                 enemie_list.add(enemie)

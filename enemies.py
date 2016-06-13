@@ -1,5 +1,6 @@
 import pygame
 from config import *
+import math
 
 class SpikeMan(pygame.sprite.Sprite):
     
@@ -56,6 +57,8 @@ class SpikeMan(pygame.sprite.Sprite):
         self.start_from = self.start_from_base
         self.end_to = self.end_to_base
 
+        self.enemie_type = "spikeman"
+        
         ## Set time to incremant animation
         self.animation_time = 0
         
@@ -174,7 +177,7 @@ class SpikeManSpike(pygame.sprite.Sprite):
         ## Get sprite width and height
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        
+
         ## Set player speed base
         self.speed_base = 4*self.conf.xfactor
         self.speed = 0
@@ -182,3 +185,98 @@ class SpikeManSpike(pygame.sprite.Sprite):
         ## Set player default position
         self.rect.y = 1080 - 32 - 94 - self.height
         self.rect.x = 32
+
+
+class FlyMan(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        ## Call the parent class (Sprite) constructor
+        super().__init__()
+
+        self.conf = Config()
+
+        ## Import textures
+        self.flyman_stand = pygame.image.load("PNG/Enemies/flyMan_stand.png").convert()
+        self.flyman_fly = pygame.image.load("PNG/Enemies/flyMan_fly.png").convert()
+        self.flyman_jump = pygame.image.load("PNG/Enemies/flyMan_jump.png").convert()
+
+        ## Resize images
+        self.flyman_stand = pygame.transform.scale(self.flyman_stand, [int(self.flyman_stand.get_width()*self.conf.factor), int(self.flyman_stand.get_height()*self.conf.factor)])
+        self.flyman_fly = pygame.transform.scale(self.flyman_fly, [int(self.flyman_fly.get_width()*self.conf.factor), int(self.flyman_fly.get_height()*self.conf.factor)])
+        self.flyman_jump = pygame.transform.scale(self.flyman_jump, [int(self.flyman_jump.get_width()*self.conf.factor), int(self.flyman_jump.get_height()*self.conf.factor)])
+
+        ## Set texture background to transparent
+        self.flyman_stand.set_colorkey(Color.BLACK)
+        self.flyman_fly.set_colorkey(Color.BLACK)
+        self.flyman_jump.set_colorkey(Color.BLACK)
+       
+        ## Set texture
+        self.image = self.flyman_stand
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        ## Get sprite position
+        self.rect = self.image.get_rect()
+
+        ## Get sprite width and height
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        
+        ## Set player speed base
+        self.speed_base = 3*self.conf.xfactor
+        self.speed = 0
+
+        ## Set player amplitude
+        self.amplitude = 100
+        self.period = 100
+        self.y_velocity = 0
+        self.before = 0
+
+        self.enemie_type = "flyman"
+
+        ## Set the ennemie parkour
+        self.start_from_base = 0
+        self.end_to_base = 0
+        self.start_from = self.start_from_base
+        self.end_to = self.end_to_base
+
+        ## Set player default position
+        self.rect.y = 1080 - 32 - 94 - self.height
+        self.rect.x = 32
+
+    def update(self) :
+        
+        ## Player animation
+        if self.y_velocity < self.before :
+            ## Each images alternate every 20 frames
+            self.image = self.flyman_fly 
+
+        elif self.y_velocity == self.before :
+            self.image = self.flyman_stand
+
+        elif self.y_velocity > self.before :
+            self.image = self.flyman_jump
+
+        i = self.rect.x - self.start_from
+        self.before = self.y_velocity
+        self.y_velocity = self.amplitude*math.sin(1/self.period*math.pi*i)
+
+        try :
+            self.rect.y = self.y_base + self.y_velocity
+        except :
+            self.y_base = self.rect.y
+
+        ## Update player position
+        if (self.rect.x + self.width) >= self.end_to :
+
+            self.speed = -(self.speed_base)
+            self.rect.x = self.end_to - self.width
+
+        elif self.rect.x < self.start_from :
+
+            self.speed = self.speed_base
+            self.rect.x = self.start_from
+
+        self.rect.x += self.speed
+        

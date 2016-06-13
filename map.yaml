@@ -24,6 +24,11 @@ Levels :
             - x : 1832
               y : 700
               to : 2000
+
+        flyman :
+            - x : 32
+              y : 900
+              to : 1000
       Player :
         x : 40
         y : 400
