@@ -321,6 +321,9 @@ class Player(pygame.sprite.Sprite):
                                 value = self.lose_life()
                             elif enemie.enemie_type == "spikeball" :
                                 value = self.lose_life()
+                            elif enemie.enemie_type == "wingman" :
+                                value = self.lose_life()
+
 
                     enemie_list.add(enemie)
                     for group in groups :

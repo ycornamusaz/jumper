@@ -116,12 +116,18 @@ class Engine() :
                 elif enemie_type == "cloud" :
                     enemie0 = Cloud()
 
+                elif enemie_type == "wingman" :
+                    enemie0 = WingMan()
+
                 enemie0.rect.x = x
                 enemie0.rect.y = y
                 enemie0.start_from = x
                 enemie0.end_to = to
                 enemie0.start_from_base = x
                 enemie0.end_to_base = to
+                if enemie_type == "wingman" :
+                    enemie0.start_from = y
+                    enemie0.start_from_base = y
 
                 for group in groups :
                     group.add(enemie0)
@@ -139,8 +145,9 @@ class Engine() :
             entity.rect.x -= self.shift
 
             try :
-                entity.start_from -= self.shift
-                entity.end_to -= self.shift
+                if entity.enemie_type != "wingman" :
+                    entity.start_from -= self.shift
+                    entity.end_to -= self.shift
             except :
                 pass
 
@@ -158,8 +165,9 @@ class Engine() :
 
     def reset_enemie(self, enemie_list) :
         for enemie in enemie_list :
-            enemie.end_to = enemie.end_to_base + self.shift
-            enemie.start_from = enemie.start_from_base + self.shift
+            if enemie.enemie_type != "wingman" :
+                enemie.end_to = enemie.end_to_base + self.shift
+                enemie.start_from = enemie.start_from_base + self.shift
 
 ########## MAP SHIFT ##########
 
@@ -172,8 +180,9 @@ class Engine() :
             for entity in liste :
                 entity.rect.x -= 5
                 try :
-                    entity.start_from -= 5
-                    entity.end_to -= 5
+                    if entity.enemie_type != "wingman" :
+                        entity.start_from -= 5
+                        entity.end_to -= 5
                 except :
                     pass
             self.shift -= 5
@@ -185,8 +194,9 @@ class Engine() :
             for entity in liste :
                 entity.rect.x += 5
                 try :
-                    entity.start_from += 5
-                    entity.end_to += 5
+                    if entity.enemie_type != "wingman" :
+                        entity.start_from += 5
+                        entity.end_to += 5
                 except :
                     pass
             self.shift += 5

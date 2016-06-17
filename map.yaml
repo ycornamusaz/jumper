@@ -34,6 +34,12 @@ Levels :
             - x : 1900
               y : 900
               to : 0
+
+        wingman :
+            - x : 1000
+              y : 500
+              to : 900
+
       Player :
         x : 40
         y : 400

@@ -464,3 +464,97 @@ class SpikeBall(pygame.sprite.Sprite):
         #    self.rect.x = self.start_from
 
         self.rect.x += self.speed
+
+
+class WingMan(pygame.sprite.Sprite):
+    
+    def __init__(self):
+        ## Call the parent class (Sprite) constructor
+        super().__init__()
+
+        self.conf = Config()
+
+        ## Import textures
+        self.wingman_1 = pygame.image.load("PNG/Enemies/wingMan1.png").convert()
+        self.wingman_2 = pygame.image.load("PNG/Enemies/wingMan2.png").convert()
+        self.wingman_3 = pygame.image.load("PNG/Enemies/wingMan3.png").convert()
+        self.wingman_4 = pygame.image.load("PNG/Enemies/wingMan4.png").convert()
+        self.wingman_5 = pygame.image.load("PNG/Enemies/wingMan5.png").convert()
+
+        ## Resize images
+        self.wingman_1 = pygame.transform.scale(self.wingman_1, [int(self.wingman_1.get_width()*self.conf.factor), int(self.wingman_1.get_height()*self.conf.factor)])
+        self.wingman_2 = pygame.transform.scale(self.wingman_2, [int(self.wingman_2.get_width()*self.conf.factor), int(self.wingman_2.get_height()*self.conf.factor)])
+        self.wingman_3 = pygame.transform.scale(self.wingman_3, [int(self.wingman_3.get_width()*self.conf.factor), int(self.wingman_3.get_height()*self.conf.factor)])
+        self.wingman_4 = pygame.transform.scale(self.wingman_4, [int(self.wingman_4.get_width()*self.conf.factor), int(self.wingman_4.get_height()*self.conf.factor)])
+        self.wingman_5 = pygame.transform.scale(self.wingman_5, [int(self.wingman_5.get_width()*self.conf.factor), int(self.wingman_5.get_height()*self.conf.factor)])
+
+        ## Set texture background to transparent
+        self.wingman_1.set_colorkey(Color.BLACK)
+        self.wingman_2.set_colorkey(Color.BLACK)
+        self.wingman_3.set_colorkey(Color.BLACK)
+        self.wingman_4.set_colorkey(Color.BLACK)
+        self.wingman_5.set_colorkey(Color.BLACK)
+       
+        ## Set texture
+        self.image = self.wingman_1
+
+        ## Set mask
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        ## Get sprite position
+        self.rect = self.image.get_rect()
+
+        ## Get sprite width and height
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        
+        ## Set player speed base
+        self.speed_base = 3*self.conf.xfactor
+        self.speed = 0
+
+        ## Set the ennemie parkour
+        self.start_from_base = 0
+        self.end_to_base = 0
+        self.start_from = self.start_from_base
+        self.end_to = self.end_to_base
+
+        self.enemie_type = "wingman"
+        
+        ## Set time to incremant animation
+        self.animation_time = 0
+        
+        ## Set player default position
+        self.rect.y = 1080 - 32 - 94 - self.height
+        self.rect.x = 32
+
+    def update(self) :
+        
+        ## Player animation
+        if self.animation_time < 10 :
+            self.image = self.wingman_2 
+        elif self.animation_time < 20 :
+            self.image = self.wingman_3
+        elif self.animation_time < 30 :
+            self.image = self.wingman_1
+        elif self.animation_time < 40: 
+            self.image = self.wingman_4
+        elif self.animation_time < 50 :
+            self.image = self.wingman_5
+        else :
+            self.animation_time = 0
+
+        self.animation_time += 1
+
+        ## Update player position
+        if self.rect.y >= self.end_to :
+
+            self.speed = -(self.speed_base/2)
+            self.rect.y = self.end_to
+
+        elif self.rect.y <= self.start_from :
+
+            self.speed = self.speed_base
+            self.rect.y = self.start_from
+
+        self.rect.y += self.speed
+        
