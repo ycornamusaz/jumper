@@ -83,10 +83,10 @@ class SpikeMan(pygame.sprite.Sprite):
                     ## Set player state to "on ground"
                     self.on_ground = True
             
-            ## Re-add block to default groups
-            movable_list.add(block)
-            block_list.add(block)
-            all_game_sprites_list.add(block)
+                ## Re-add block to default groups
+                movable_list.add(block)
+                block_list.add(block)
+                all_game_sprites_list.add(block)
 
         else :
             ## Set plaxer state to "not on ground"
@@ -415,10 +415,10 @@ class SpikeBall(pygame.sprite.Sprite):
                     ## Set player state to "on ground"
                     self.on_ground = True
             
-            ## Re-add block to default groups
-            movable_list.add(block)
-            block_list.add(block)
-            all_game_sprites_list.add(block)
+                ## Re-add block to default groups
+                movable_list.add(block)
+                block_list.add(block)
+                all_game_sprites_list.add(block)
 
         else :
             ## Set plaxer state to "not on ground"
