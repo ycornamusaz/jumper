@@ -1,0 +1,4 @@
+[submodule "jumper_editor"]
+	path = jumper_editor
+	url = git@github.com:ycornamusaz/jumper_editor.git
+	branch = game
