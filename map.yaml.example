@@ -1,0 +1,46 @@
+Levels :
+    - Blocks :
+        grass :
+            - x : 32
+              y : 110
+        stone :
+            - x : 32
+              y : 510
+        snow :
+            - x : 632
+              y : 210
+        sand :
+            - x : 1232
+              y : 310
+        wood :
+            - x : 1832
+              y : 410
+      Enemies :
+        spikeman :
+            - x : 1232
+              y : 600
+              to : 1632
+                
+            - x : 1832
+              y : 700
+              to : 2000
+
+        flyman :
+            - x : 32
+              y : 900
+              to : 1000
+
+        cloud :
+            - x : 1900
+              y : 900
+              to : 0
+
+        wingman :
+            - x : 1000
+              y : 500
+              to : 900
+
+      Player :
+        x : 40
+        y : 400
+
