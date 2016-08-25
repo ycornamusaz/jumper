@@ -13,7 +13,8 @@
 - [x] Create an option menu
 - [x] Create a player menu
 - [x] Fix enemies speed bug
-- [ ] Create levels
-- [ ] Add player's enemys
-- [ ] Add custom level editor
+- [x] Add player's enemys
+- [x] Add custom level editor
+- [ ] Add items and bonus
+- [ ] Create more levels
 - [ ] Level selector
