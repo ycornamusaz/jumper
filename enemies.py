@@ -336,8 +336,15 @@ class Cloud(pygame.sprite.Sprite):
 
         if self.spawncount == 0 :
             spikeball = SpikeBall()
+
+            if self.end_to < self.rect.x - self.width/2 :
+                spikeball.speed_base = -5*self.conf.xfactor
+            elif self.end_to > self.rect.x - self.width/2 :
+                spikeball.speed_base = 5*self.conf.xfactor
+
             spikeball.rect.x = self.rect.x + self.width/4
             spikeball.rect.y = self.rect.y + self.height/2
+
             for group in groups :
                 group.add(spikeball)
 
@@ -408,7 +415,7 @@ class SpikeBall(pygame.sprite.Sprite):
         ## Detect rect colisions between player and ground blocks
         block_player_list = pygame.sprite.spritecollide(self, block_list, True)
         if block_player_list != [] :
-            self.speed = -(self.speed_base/2)
+            self.speed = self.speed_base/2
             for block in block_player_list :
                 ## Detect bitmap colisions between player and ground block
                 if pygame.sprite.collide_mask(self, block) != None :
@@ -510,7 +517,7 @@ class WingMan(pygame.sprite.Sprite):
         
         ## Set player speed base
         self.speed_base = 3*self.conf.xfactor
-        self.speed = 0
+        self.speed = 1
 
         ## Set the ennemie parkour
         self.start_from_base = 0
@@ -546,15 +553,15 @@ class WingMan(pygame.sprite.Sprite):
         self.animation_time += 1
 
         ## Update player position
-        if self.rect.y >= self.end_to :
-
-            self.speed = -(self.speed_base/2)
-            self.rect.y = self.end_to
-
-        elif self.rect.y <= self.start_from :
+        if self.rect.y <= self.end_to :
 
             self.speed = self.speed_base
-            self.rect.y = self.start_from
+            #self.rect.y = self.end_to
+
+        elif self.rect.y >= self.start_from :
+
+            self.speed = -(self.speed_base/2)
+            #self.rect.y = self.start_from
 
         self.rect.y += self.speed
-        
+

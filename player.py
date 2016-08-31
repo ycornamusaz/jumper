@@ -48,6 +48,8 @@ class Player(pygame.sprite.Sprite):
         ## Set texture
         self.image = self.bunny_stand
 
+        self.entity_type = 'player'
+
         ## Set mask
         self.mask = pygame.mask.from_surface(self.image)
         

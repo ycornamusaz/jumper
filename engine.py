@@ -24,7 +24,8 @@ class Engine() :
             self.map_data = yaml.load(map_data)
         
         ## Set the shift of the map
-        self.shift = 0
+        self.shift_x = 0
+        self.shift_y = 0
 
 ########## CREATE AND CONFIGURE PLAYERS ##########
 
@@ -99,40 +100,45 @@ class Engine() :
 ########## CREATE, CONFIGURE ENEMIES ##########
 
     def gen_enemies(self, groups) :
-        for enemie_type in self.map_data["Levels"][0]["Enemies"] :
-            i = 0
+        try :
+            for enemie_type in self.map_data["Levels"][0]["Enemies"] :
+                i = 0
 
-            for x, y, to in self.map_data["Levels"][0]["Enemies"][enemie_type] :
-                x = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["x"]*self.conf.factor
-                y = (1000 - self.map_data["Levels"][0]["Enemies"][enemie_type][i]["y"])*self.conf.factor
-                to = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["to"]*self.conf.factor
+                for x, y, to in self.map_data["Levels"][0]["Enemies"][enemie_type] :
+                    x = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["x"]*self.conf.factor
+                    y = (1000 - self.map_data["Levels"][0]["Enemies"][enemie_type][i]["y"])*self.conf.factor
+                    to = self.map_data["Levels"][0]["Enemies"][enemie_type][i]["to"]*self.conf.factor
 
-                if enemie_type == "flyman" :
-                    enemie0 = FlyMan()
+                    if enemie_type == "flyman" :
+                        enemie0 = FlyMan()
 
-                elif enemie_type == "spikeman" :
-                    enemie0 = SpikeMan()
+                    elif enemie_type == "spikeman" :
+                        enemie0 = SpikeMan()
 
-                elif enemie_type == "cloud" :
-                    enemie0 = Cloud()
+                    elif enemie_type == "cloud" :
+                        enemie0 = Cloud()
 
-                elif enemie_type == "wingman" :
-                    enemie0 = WingMan()
+                    elif enemie_type == "wingman" :
+                        enemie0 = WingMan()
 
-                enemie0.rect.x = x
-                enemie0.rect.y = y
-                enemie0.start_from = x
-                enemie0.end_to = to
-                enemie0.start_from_base = x
-                enemie0.end_to_base = to
-                if enemie_type == "wingman" :
-                    enemie0.start_from = y
-                    enemie0.start_from_base = y
+                    enemie0.rect.x = x
+                    enemie0.rect.y = y
+                    enemie0.start_from = x
+                    enemie0.end_to = to
+                    enemie0.start_from_base = x
+                    enemie0.end_to_base = to
+                    if enemie_type == "wingman" :
+                        enemie0.start_from = y
+                        enemie0.start_from_base = y
+                        enemie0.end_to = 1000 - to
+                        enemie0.end_to_base = 1000 - to
 
-                for group in groups :
-                    group.add(enemie0)
+                    for group in groups :
+                        group.add(enemie0)
 
-                i += 1
+                    i += 1
+        except :
+            pass
 
 ########## RESET MAP PROCESS ##########
 
@@ -142,12 +148,16 @@ class Engine() :
         for entity in liste :
 
             ## Reset the entitie position
-            entity.rect.x -= self.shift
+            entity.rect.x -= self.shift_x
+            entity.rect.y -= self.shift_y
 
             try :
                 if entity.enemie_type != "wingman" :
-                    entity.start_from -= self.shift
-                    entity.end_to -= self.shift
+                    entity.start_from -= self.shift_x
+                    entity.end_to -= self.shift_x
+                else :
+                    entity.start_from -= self.shift_y
+                    entity.end_to -= self.shift_y
             except :
                 pass
 
@@ -158,16 +168,21 @@ class Engine() :
             ## Set the player state to "not on the ground"
             player.on_ground = False
 
-        ## Reset shift
-        self.shift = 0
+        ## Reset shifts
+        self.shift_x = 0
+        self.shift_y = 0
 
 ########## RESET ENEMIE DEFAULT POSITION ##########
 
     def reset_enemie(self, enemie_list) :
         for enemie in enemie_list :
             if enemie.enemie_type != "wingman" :
-                enemie.end_to = enemie.end_to_base + self.shift
-                enemie.start_from = enemie.start_from_base + self.shift
+                enemie.end_to = enemie.end_to_base + self.shift_x
+                enemie.start_from = enemie.start_from_base + self.shift_x
+            else :
+                enemie.end_to = enemie.end_to_base + self.shift_y
+                enemie.start_from = enemie.start_from_base + self.shift_y
+
 
 ########## MAP SHIFT ##########
 
@@ -175,7 +190,7 @@ class Engine() :
 
         ## If the player is at 1/3 of je screen on the right side
         if (player.rect.x + player.width) > (self.conf.width - self.conf.width/3) :
-            
+
             ## Shift all the entities to the left
             for entity in liste :
                 entity.rect.x -= 5
@@ -185,7 +200,7 @@ class Engine() :
                         entity.end_to -= 5
                 except :
                     pass
-            self.shift -= 5
+            self.shift_x -= 5
 
         ## If the player is at 1/16 of je screen on the left side
         if player.rect.x < (self.conf.width/16) :
@@ -199,7 +214,33 @@ class Engine() :
                         entity.end_to += 5
                 except :
                     pass
-            self.shift += 5
+            self.shift_x += 5
+
+#        if player.rect.y < (self.conf.width/8) :
+#
+#            for entity in liste :
+#                entity.rect.y += 5
+#
+#                try :
+#                    if entity.enemie_type == "wingman" :
+#                        entity.start_from += 5
+#                        entity.end_to += 5
+#                except :
+#                    pass
+#            self.shift_y += 5
+#
+#        if player.rect.y > (self.conf.width/8) and self.shift_y > 0 :
+#
+#            for entity in liste :
+#                entity.rect.y -= 5
+#
+#                try :
+#                    if entity.enemie_type == "wingman" :
+#                        entity.start_from -= 5
+#                        entity.end_to -= 5
+#                except :
+#                    pass
+#            self.shift_y -= 5
 
 ########## BUTON UPDATE ##########
 
@@ -207,7 +248,7 @@ class Engine() :
 
         ## Detect rect colision between pointer and buton group
         buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
-        
+
         ## If a rect colision is detected
         if buton_pointer_list != [] : 
             ## For each buton who are in colision with pointer
@@ -233,7 +274,7 @@ class Engine() :
 ########## GET BUTON ##########
 
     def get_pressed_buton(self, buton_list, pointer, groups) :
-        
+
         ## Detect rect colision between pointer and buton group
         buton_pointer_list = pygame.sprite.spritecollide(pointer, buton_list, True)
         ## For each butons
@@ -261,7 +302,7 @@ class Engine() :
             buton.text = buton.base_text + " " + buton.ext
             ## Update the buton text
             buton.update(buton.text, buton.color)
-        
+
         ## If not create it
         except :
             ## Create the base_text attribut
@@ -276,7 +317,7 @@ class Engine() :
 ########## SWITCH THE RESOLUTION ##########
 
     def switch_resolution_buton(self, buton) :
-        
+
         ## For each resolution's posibility
         for i in range(len(self.config_data["Config"]["Screen"]["resolutions"])) :
 
