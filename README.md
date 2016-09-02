@@ -6,6 +6,8 @@ Jumper is a small platform-game written in python with the pygame library.
 
 ### Linux
 
+#### Dependencies
+
 You must install pygame for python 3 :
 
 Install the dependencies :
@@ -27,6 +29,14 @@ Then  go to the directory, buitld and install pygame
 And install python3-yaml :
 
 > sudo apt-get install python3-yaml
+
+#### Jumper level editor
+
+You must sync the submodule :
+
+> git submodule init
+
+> git submodule update
 
 ### Windows
 
